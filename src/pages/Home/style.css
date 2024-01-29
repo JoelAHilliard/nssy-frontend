@@ -1,0 +1,58 @@
+.view {
+    margin: auto;
+  }
+  
+  .wrapper {
+    position: relative;
+    overflow: auto;
+    /* border: 4px solid green; */
+    white-space: nowrap;
+  }
+  
+  .sticky-col {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    /* background-color: "#202C37"; */
+  }
+  
+  .first-col {
+
+    left: 0px;
+  }
+  
+  .second-col {
+    left: 100px;
+  }
+
+  /* Ensure that all table cells have a bottom border */
+.table-cell {
+}
+
+/* Specific style for sticky column to ensure it doesn't override border */
+.sticky-col.first-col {
+    position: sticky;
+    left: 0;
+    /* background: #202C37; Your existing background */
+}
+.table {
+}
+
+.tableContainer {
+    overflow: auto;
+    height: 80vh;
+  }
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    padding: 8px;
+  }
+  th[scope="row"], thead tr {
+    position: sticky;
+    top: 0;
+    left: 0;
+  }
