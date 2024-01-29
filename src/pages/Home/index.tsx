@@ -135,9 +135,7 @@ export function Home() {
 													<TableRow className="hover:cursor-pointer font-quick" onClick={()=> handleRowClick("/"+crypto.symbol)}>
 															<TableCell className="font-thin text-xs text-center table-cell">
 																<a class="flex flex-col justify-start" href={"/" + crypto.symbol}>
-																	<span class="text-left">
-																		${intToString(crypto.market_cap,false)}
-																	</span>
+																	
 																	<span class="text-muted-foreground text-left">
 																		{crypto.market_cap_rank}
 																	</span>
@@ -151,7 +149,7 @@ export function Home() {
 																		<div>
 
 																			<p class="bg-card min-w-[60px] px-2 whitespace-break-spaces">{crypto.name}</p>
-																			<p class="bg-card min-w-[60px] px-2 whitespace-break-spaces text-muted-foreground">{crypto.symbol.toUpperCase()}</p>
+																			<p class="bg-card min-w-[60px] px-2 whitespace-break-spaces text-muted-foreground"><span>${intToString(crypto.market_cap,false)} </span></p>
 																		</div>
 																	
 																	</a>
