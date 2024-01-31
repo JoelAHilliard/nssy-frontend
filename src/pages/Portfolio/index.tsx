@@ -1,4 +1,4 @@
-import { portfolio_data,market_data } from "@/preact-service"
+import { portfolio_data,cryptos_list,cryptos_map } from "@/preact-service"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CreatePortfolio } from "./components/create-portfolio"
 import { ChevronDown, EditIcon, PlusCircleIcon, PlusIcon } from "lucide-react"
@@ -146,21 +146,27 @@ const Portfolio = () => {
             <CreatePortfolio />
         )
     }
-    if(portfolio_data.value && market_data.value){
+    if(portfolio_data.value){
         return(
             <div class="flex py-2 max-w-screen-xl max-w-container mx-auto w-full flex flex-col items-center justify-start gap-2 px-2">
-                <CreatePortfolio />
-                
-                <span>
+                <div class="flex justify-between w-full">
+
+                <span class="text-lg font-semibold text-gray-800 dark:text-gray-300">
                     Total:
-                        {" " + intToString(portfolio_data.value.reduce((accumulator,port)=> {
-                                return accumulator + port.coins.reduce((accumulator, coin) => {
-                                    return accumulator + (Number(coin.amount) * coin.crypto.current_price[0]);
-                                },0)
-                        },0),true)}
-
-
+                    <span class="text-xl md:text-2xl font-bold text-green-600 dark:text-green-400 ml-2">
+                        {" " + intToString(portfolio_data.value.reduce((accumulator, port) => {
+                            return accumulator + port.coins.reduce((accumulator, coin) => {
+                                return accumulator + (Number(coin.amount) * coin.crypto.current_price[0]);
+                            }, 0)
+                        }, 0), true)}
+                    </span>
                 </span>
+                <CreatePortfolio />
+
+                </div>
+                
+             
+
 
                 {portfolio_data.value.map((port)=>{
                     return(
@@ -192,7 +198,7 @@ const Portfolio = () => {
                                                     <div className="border-t border-gray-100"></div>
                                                     <div class="flex flex-col">
 
-                                                    {cryptos_list.filter(
+                                                    {cryptos_list.value.filter(
                                                         crypto => 
                                                         crypto.name.toLowerCase().includes(search.toLowerCase()) || crypto.symbol.toLowerCase().includes(search.toLowerCase())
                                                     ).map((crypto) => {
@@ -202,7 +208,7 @@ const Portfolio = () => {
                                                                 return
                                                             }
                                                             setIsDropdownOpen(!isDropdownOpen);
-                                                            setCrypto(cryptos_map[crypto.name])
+                                                            setCrypto(cryptos_map.value[crypto.name])
                                                         }}>
                                                             {crypto.name}
                                                         </Button>
@@ -245,12 +251,9 @@ const Portfolio = () => {
                                     }
                                 </p>
                             </CardHeader>
-                            <CardContent>
-
-                                
 
                                 <div>
-                                    <div class="flex items-start py-2 max-w-screen-xl max-w-container mx-auto w-full flex flex-col justify-start gap-2" >
+                                    <div class="flex items-start py-2 max-w-screen-xl max-w-container mx-auto w-full flex flex-col justify-start gap-2 px-2" >
                                         <div class="view w-full"> 
                                                     <div class="wrapper table-container">
                                                     <Table className="table font-quick">
@@ -284,15 +287,16 @@ const Portfolio = () => {
                                                                     return (
                                                                         <TableRow className="">
                                                                             <TableCell className="font-medium text-xs table-cell sticky-col first-col transition-colors px-0 sticky">
-                                                                            <a class="flex items-center" href={"/" + c.crypto.symbol}>
-                                                                                    <img class="w-[24px] h-[24px] rounded-full" src={c.crypto.img}></img>
-                                                                                    <div>
+                                                                            <a class="flex flex-col md:flex-row items-center justify-start bg-card" href={"/" + c.crypto.symbol}>
+                                                                                <img class="h-6 rounded-full" src={c.crypto.img} alt="Crypto Icon"/>
 
-                                                                                        <p class="bg-card min-w-[60px] px-2 whitespace-break-spaces">{c.crypto.name}</p>
-                                                                                        <p class="bg-card min-w-[60px] px-2 whitespace-break-spaces text-muted-foreground">{c.crypto.symbol.toUpperCase()}</p>
-                                                                                    </div>
-                                                                                
-                                                                                </a>
+                                                                                <div class="flex flex-col md:flex-col bg-card items-start">
+                                                                                    <p class="hidden md:block bg-card min-w-[60px] px-2 whitespace-pre-wrap">{c.crypto.name}</p>
+
+                                                                                    <p class="bg-card min-w-[60px] px-2 whitespace-pre-wrap text-muted-foreground text-center md:text-start">{c.crypto.symbol.toUpperCase()}</p>
+                                                                                </div>
+                                                                            </a>
+
                                                                             </TableCell>
                                                                             <TableCell className="font-medium text-center table-cell">${c.crypto.current_price[0]}</TableCell>
                                                                             
@@ -360,7 +364,6 @@ const Portfolio = () => {
                                     </div>
                                 </div>
                                 
-                            </CardContent>
                         </Card>
                     )
                 })}

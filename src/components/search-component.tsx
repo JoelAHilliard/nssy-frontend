@@ -17,7 +17,7 @@ import { Button } from "./ui/button";
 const SearchComponent = () => {
     const [filter,setFilter] = useState("");
     return (
-        <div className="max-w-[300px] mb-2 flex flex-row items-center">
+        <div className="max-w-[300px] flex flex-row items-center">
             
             <NavigationMenu>
                 <NavigationMenuList>

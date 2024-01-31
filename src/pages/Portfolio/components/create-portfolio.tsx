@@ -34,13 +34,13 @@ export const CreatePortfolio = () => {
     return(
         <div>
              <Dialog>
-            <DialogTrigger><Button type="outline">Create portfolio</Button></DialogTrigger>
+            <DialogTrigger><Button variant="ghost">Add Bucket</Button></DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Create</DialogTitle>
                 </DialogHeader>
                 <div>
-                    <Label htmlFor="portfoliotitle">Portfolio Name</Label>
+                    <Label htmlFor="portfoliotitle">Bucket Name</Label>
                     <Input type="text" id="amount" placeholder="Hot/Cold wallet, Coinbase, PoW..." onChange={(e) => setName(e.target.value)} />
                 </div>
                 {/* <div>

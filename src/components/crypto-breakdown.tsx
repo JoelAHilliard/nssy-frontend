@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import { intToString } from "../index";
 import ErrorNotFound from "./error-not-found";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { ArrowBigLeft } from "lucide-react";
 const CryptoBreakdown = (params) => {
     const location = useLocation();
     const [crypto, setCrypto] = useState(null);
@@ -165,6 +166,9 @@ const CryptoBreakdown = (params) => {
 
         return(
             <div class="py-2 max-w-screen-xl max-w-container mx-auto w-full px-2 gap-2" >
+                <div class="mb-3">
+                    <Button variant="ghost"><a href="/"><ArrowBigLeft/></a></Button>
+                </div>
                 <Card className="lg:max-w-[40%] mx-auto">
                     <CardHeader>
                         <div class="grid grid-cols-2">

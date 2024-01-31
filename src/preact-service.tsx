@@ -37,6 +37,8 @@ export const getMarketData = () => {
               map[crypto.name] = crypto;
               return map;
           }, {});
+
+
       if(!portfolio_data.value){
         portfolio_data.value = [];
       }
@@ -53,7 +55,8 @@ export const getMarketData = () => {
         });
   
         const endTime = performance.now(); // End timing
-  
+      console.log(cryptos_list.value)
+        
         console.log(`Update Time: ${endTime - startTime} milliseconds`);
       }
   

@@ -8,10 +8,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useTheme } from "@/components/theme-provider"
+import { useEffect } from "preact/hooks"
 
 export function ModeToggle() {
-  const { setTheme } = useTheme()
+  const { setTheme,theme } = useTheme()
+  useEffect(()=>{
+    const metaThemeColor = document.querySelector("meta[name=theme-color]");
 
+    if(theme === "dark"){
+      if (metaThemeColor) {
+          metaThemeColor.setAttribute("content", "#020817");
+      }
+    } else {
+      if (metaThemeColor) {
+        metaThemeColor.setAttribute("content", "#fff");
+     }
+    }
+  },[theme])
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

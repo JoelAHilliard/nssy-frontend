@@ -17,6 +17,7 @@ import { getGlobal, tableData } from "@/preact-service";
 import { useEffect, useState } from "preact/hooks";
 import { Input } from "@/components/ui/input";
 import { route } from "preact-router";
+import { cryptos_list, cryptos_map } from "@/preact-service";
 const activeFilter = signal("market_cap_rank");
 
 const tableHTML = signal(null);
