@@ -8,6 +8,8 @@ const GRAPH_API_URL = "https://api.nssy.xyz/";
 export const market_data = signal(null);
 
 export const portfolio_data = signal([]);
+export const cryptos_list = signal([]);
+export const cryptos_map = signal([]);
 
 export const tableData = signal(null);
 
@@ -24,7 +26,17 @@ export const getMarketData = () => {
     .then(res => res.json())
     .then(data => {
       market_data.value = data;
-      
+      console.log(data)
+      cryptos_list.value = data.map((crypto) => ({
+          "name": crypto.name,
+          "symbol": crypto.symbol,
+          "img": crypto.img,
+          "daily": crypto.dailyChange,
+      }));
+      cryptos_map.value =  data.reduce((map, crypto) => {
+              map[crypto.name] = crypto;
+              return map;
+          }, {});
       if(!portfolio_data.value){
         portfolio_data.value = [];
       }

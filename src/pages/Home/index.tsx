@@ -10,21 +10,14 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table";
-  import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
+import DropDownMenu from "@/components/dropdown-menu";
 import { effect, signal } from "@preact/signals";
 import './style.css'
 import { getGlobal, tableData } from "@/preact-service";
 import { useEffect, useState } from "preact/hooks";
 import { Input } from "@/components/ui/input";
 import { route } from "preact-router";
-const activeFilter = signal("market_cap");
+const activeFilter = signal("market_cap_rank");
 
 const tableHTML = signal(null);
 
@@ -33,12 +26,9 @@ export function Home() {
 	const [endIndex,setEndIndex] = useState(100);
 	const [globalData,setGlobalData] = useState(null);
 	const [filter,setFilter] = useState("");
-	useEffect(()=>{
-		getGlobal().then(data=>{
-			setGlobalData(data[0].data.data)
-		});
-	},[])
+	
 	const handleClick = (filter,dir) => {
+		console.log(filter)
         activeFilter.value = filter;
         const copy = tableData.peek(); // get clone of data
         let team_data = sortTeamsBy(copy, filter,dir);
@@ -91,36 +81,32 @@ export function Home() {
 		} else {
 			tableHTML.value = 
 				<div class="view w-full"> 
-						<div class="max-w-[300px] mb-2 flex flex-row items-center">
-								<SearchIcon className="absolute pl-2" />
-								<Input type="text" className="px-8" placeholder="Search..." onChange={(e) => setFilter(e.target.value)}>Test</Input>
-						</div>
 						<div class="wrapper table-container">
 							<Table className="table">
 								<TableHeader>
 									<TableRow>
-										<TableHead className="flex justofy-start">
-											<DropDownMenu callback={handleClick} filter={"market_cap_rank"} name="#"/>
+										<TableHead className="flex justify-start my-2">
+											<DropDownMenu activeFilter={activeFilter} callback={handleClick} filter={"market_cap_rank"} name="#"/>
 										</TableHead>
-										<TableHead className="table-cell sticky-col first-col px-0 sticky"><p class="w-full bg-card min-w-[60px] py-1 pl-2 font-medium">Crypto</p>
-										</TableHead>
-										<TableHead >
-											<DropDownMenu callback={handleClick} filter={"current_price"} name="Price"/>
-										</TableHead>
-										<TableHead>
-											<DropDownMenu callback={handleClick} filter={"dailyChange"} name="Daily" />
-										</TableHead>
-										<TableHead>
-											<DropDownMenu callback={handleClick} filter={"weeklyChange"} name="Weekly" />
-										</TableHead>
-										<TableHead>
-											<DropDownMenu callback={handleClick} filter={"monthlyChange"} name="Monthly" />
-										</TableHead>
-										<TableHead>
-											<DropDownMenu callback={handleClick} filter={"circulating_supply"} name="Circ. Supply"/>
+										<TableHead className="table-cell sticky-col first-col px-0 sticky"><p class="w-full bg-card min-w-[60px] py-1 font-medium">Coin</p>
 										</TableHead>
 										<TableHead >
-											<DropDownMenu callback={handleClick} filter={"market_cap"} name="Market Cap"/>
+											<DropDownMenu  activeFilter={activeFilter}  callback={handleClick} filter={"current_price"} name="Price"/>
+										</TableHead>
+										<TableHead>
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"dailyChange"} name="Daily" />
+										</TableHead>
+										<TableHead>
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"weeklyChange"} name="Weekly" />
+										</TableHead>
+										<TableHead>
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"monthlyChange"} name="Monthly" />
+										</TableHead>
+										<TableHead>
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"circulating_supply"} name="Circ. Supply"/>
+										</TableHead>
+										<TableHead >
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"market_cap"} name="Market Cap"/>
 										</TableHead>
 									</TableRow>
 								</TableHeader>
@@ -144,8 +130,8 @@ export function Home() {
 															</TableCell>
 
 															<TableCell className="font-medium text-xs table-cell sticky-col first-col transition-colors px-0 sticky">
-																	<a class="flex items-center" href={"/" + crypto.symbol}>
-																		<img class="w-[24px] h-[24px] rounded-full" src={crypto.img}></img>
+																	<a class="flex items-center bg-background" href={"/" + crypto.symbol}>
+																		<img class="w-[24px] h-[24px] rounded-full bg-background" src={crypto.img}></img>
 																		<div>
 
 																			<p class="bg-card min-w-[60px] px-2 whitespace-break-spaces">{crypto.name}</p>
@@ -195,7 +181,7 @@ export function Home() {
 																	)
 																) : (
 																	<a href={"/" + crypto.symbol}>
-																		"N/A"
+																		N/A
 																	</a>
 																)}
 															</TableCell>
@@ -214,7 +200,7 @@ export function Home() {
 																	)
 																) : (
 																	<a href={"/" + crypto.symbol}>
-																		"N/A"
+																		N/A
 																	</a>
 																)}
 															</TableCell>
@@ -246,49 +232,8 @@ export function Home() {
 
 	return (
 		<div class="flex items-start py-2 max-w-screen-xl max-w-container mx-auto w-full flex flex-col justify-start gap-2 px-2" >
-				{globalData && 
-				
-				<div>
-				<Card className="flex flex-col gap-2 px-2 md:flex-row md:gap-4">
-					<span>Cryptos: {globalData['active_cryptocurrencies']}</span>
-					<span className="block">
-						Crypto Market Cap: ${intToString(globalData['total_market_cap']['usd'])} 
-						<span className={`${globalData['market_cap_change_percentage_24h_usd'] < 0 ? "text-red-600" : "text-green-600"}`}>
-							{globalData['market_cap_change_percentage_24h_usd'].toFixed(2)}%
-						</span>
-					</span>
-					<span>Active ICOs: {globalData['ongoing_icos']}</span>
-					<span>BTC.D: {globalData['market_cap_percentage']['btc'].toFixed(2)}%</span>
-					<span>ETH.D: {globalData['market_cap_percentage']['eth'].toFixed(2)}%</span>
-				</Card>
-			</div>
-			
-
-				}
 			{tableHTML.value}
 		</div>
 	)
 	
-}
-
-
-const DropDownMenu = ({callback, filter, name}) => {
-
-    return(
-        <div >
-            <DropdownMenu className={`hover:cursor-pointer flex justify-center`}>
-            <DropdownMenuTrigger className="flex items-center justify-center mx-auto">
-				<Button className={`${filter === activeFilter.value ? "text-primary" : ""} whitespace-nowrap w-fit px-1 focus-visible:none`} variant="ghost">{name}</Button>
-			</DropdownMenuTrigger>
-            <DropdownMenuContent>
-                <DropdownMenuLabel>Sort {name}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => callback(filter,"a")}>Ascending</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => callback(filter,"d")}>Descending</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-        </div>
-        
-    )
-                    
 }

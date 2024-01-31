@@ -12,14 +12,8 @@ import {
     DialogTrigger,DialogClose
     
   } from "@/components/ui/dialog";
-  import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
+import DropDownMenu from "@/components/dropdown-menu";
+
 import {ChevronUp} from "lucide-react";
 import {
     Table,
@@ -43,6 +37,7 @@ const Portfolio = () => {
     const [crypto,setCrypto]=useState(null);
 
     const [price,setPrice]=useState(null);
+    const [activePort,setActivePort]=useState(null);
     
     const [amount,setAmount]=useState(null);
     const [error,setError]=useState(false);
@@ -76,17 +71,9 @@ const Portfolio = () => {
         setSearch("");
         setAmount(null);
     };
-    const cryptos_list = market_data.value ? market_data.value.map((crypto) => ({
-            "name": crypto.name,
-            "symbol": crypto.symbol,
-        })) : [];
-    const cryptos_map = market_data.value 
-        ? market_data.value.reduce((map, crypto) => {
-            map[crypto.name] = crypto;
-            return map;
-        }, {})
-        : {};
+
 	const handleClick = (filter,dir,port) => {
+        setActivePort(port.name);
         activeFilter.value = filter;
         const copy = portfolio_data.peek(); // get clone of data
         let team_data = sortBy(copy, filter,dir, port);
@@ -103,7 +90,7 @@ const Portfolio = () => {
         filter_ports.value.push(obj);
         for(let i = 0;i<ports_copy.length;i++){
             if(ports_copy[i].name === port.name){
-                
+                console.log("here",port.name)
                 if(dir === 'd'){
                     if(filter === 'current_price'){
                         ports_copy[i].coins.sort((a,b)=> {
@@ -162,8 +149,9 @@ const Portfolio = () => {
     if(portfolio_data.value && market_data.value){
         return(
             <div class="flex py-2 max-w-screen-xl max-w-container mx-auto w-full flex flex-col items-center justify-start gap-2 px-2">
-                 <CreatePortfolio />
-                 <span>
+                <CreatePortfolio />
+                
+                <span>
                     Total:
                         {" " + intToString(portfolio_data.value.reduce((accumulator,port)=> {
                                 return accumulator + port.coins.reduce((accumulator, coin) => {
@@ -172,7 +160,8 @@ const Portfolio = () => {
                         },0),true)}
 
 
-                 </span>
+                </span>
+
                 {portfolio_data.value.map((port)=>{
                     return(
                         <Card className="w-full">
@@ -270,23 +259,22 @@ const Portfolio = () => {
                                                                 <TableHead className="table-cell sticky-col first-col px-0 sticky"><p class="w-full bg-card min-w-[60px] py-1 pl-2 font-medium">Crypto</p>
                                                                 </TableHead>
                                                                 <TableHead >
-                                                                    <DropDownMenu callback={handleClick} filter={"current_price"} name="Price" port={port}/>
-                                                                </TableHead>
-                                                                
-                                                                <TableHead>
-                                                                    <DropDownMenu callback={handleClick} filter={"dailyChange"} name="Daily" port={port}/>
+                                                                    <DropDownMenu activePort={activePort} activeFilter={activeFilter} callback={handleClick} filter={"current_price"} name="Price" port={port}/>
                                                                 </TableHead>
                                                                 <TableHead>
-                                                                    <DropDownMenu callback={handleClick} filter={"weeklyChange"} name="Weekly" port={port}/>
+                                                                    <DropDownMenu activePort={activePort} activeFilter={activeFilter} callback={handleClick} filter={"dailyChange"} name="Daily" port={port}/>
                                                                 </TableHead>
                                                                 <TableHead>
-                                                                    <DropDownMenu callback={handleClick} filter={"monthlyChange"} name="Monthly" port={port}/>
+                                                                    <DropDownMenu activePort={activePort} activeFilter={activeFilter}  callback={handleClick} filter={"weeklyChange"} name="Weekly" port={port}/>
                                                                 </TableHead>
                                                                 <TableHead>
-                                                                    <DropDownMenu callback={handleClick} filter={"circulating_supply"} name="Circ. Supply" port={port}/>
+                                                                    <DropDownMenu activePort={activePort} activeFilter={activeFilter} callback={handleClick} filter={"monthlyChange"} name="Monthly" port={port}/>
+                                                                </TableHead>
+                                                                <TableHead>
+                                                                    <DropDownMenu activePort={activePort} activeFilter={activeFilter} callback={handleClick} filter={"circulating_supply"} name="Circ. Supply" port={port}/>
                                                                 </TableHead>
                                                                 <TableHead >
-                                                                    <DropDownMenu callback={handleClick} filter={"amount"} name="Amount"port={port}/>
+                                                                    <DropDownMenu activePort={activePort} activeFilter={activeFilter} callback={handleClick} filter={"amount"} name="Amount"port={port}/>
                                                                 </TableHead>
                                                             </TableRow>
                                                         </TableHeader>
@@ -383,31 +371,3 @@ const Portfolio = () => {
 
 export default Portfolio
 
-const DropDownMenu = ({callback, filter, name, port}) => {
-    let textColorTrue = false;
-
-    filter_ports.value.forEach(obj => {
-        if (obj.hasOwnProperty(port.name) && obj[port.name] === filter) {
-            textColorTrue = true;
-        }
-    });
-
-
-    return(
-        <div >
-            <DropdownMenu className={`hover:cursor-pointer flex justify-center`}>
-            <DropdownMenuTrigger className="flex items-center justify-center mx-auto">
-				<Button className={`${filter === activeFilter.value && textColorTrue ? "text-primary" : ""} whitespace-nowrap w-fit px-1 focus-visible:none`} variant="ghost">{name}</Button>
-			</DropdownMenuTrigger>
-            <DropdownMenuContent>
-                <DropdownMenuLabel>Sort {name}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => callback(filter,"a",port)}>Ascending</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => callback(filter,"d",port)}>Descending</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-        </div>
-        
-    )
-                    
-}

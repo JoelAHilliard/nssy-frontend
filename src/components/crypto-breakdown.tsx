@@ -115,8 +115,9 @@ const CryptoBreakdown = (params) => {
             },
             chart: {
                 opacity:0.5,
-                backgroundColor: "transparent", // Sets the chart background to transparent
-                type: 'area' // Change this to 'bar' or 'column' if you're not using a line chart
+                backgroundColor: "transparent",
+                type: 'area',
+                height:200
             },
             xAxis:{
                 type:"",
@@ -166,24 +167,28 @@ const CryptoBreakdown = (params) => {
             <div class="py-2 max-w-screen-xl max-w-container mx-auto w-full px-2 gap-2" >
                 <Card className="lg:max-w-[40%] mx-auto">
                     <CardHeader>
-                        <div class="flex items-center gap-4 justify-center">
-                            <div class="flex items-center gap-1">
+                        <div class="grid grid-cols-2">
+                            <div class="flex items-center">
                                 <img class="w-[24px] h-[24px] rounded-full" src={crypto.img}></img>
-                                <p class="text-xl font-semibold text-foreground">{crypto.name} <span class="text-sm text-gray-500">({crypto.symbol})</span></p>
-                            
+                                <p class="text-xl font-semibold text-foreground flex items-center gap-1">{crypto.name} <span class="text-base text-gray-500">{crypto.symbol}</span></p>
                             </div>
-                            <p class="text-lg text-foreground">$<span class="font-semibold">{crypto.current_price[0]}</span></p>
+                            
+                            <p class="text-xl text-foreground">$<span class="font-bold">{crypto.current_price[0]}</span>   
+                            
+                            <span>
+                                {crypto.dailyChange && <span class={crypto.dailyChange > 0 ? `text-left text-green-600`: `text-left text-red-600`}> {crypto.dailyChange.toFixed(2)}%</span>}
+                            </span>
+                            </p>
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <div class="flex  justify-center gap-2">
-                            <p class="text-foreground">Circulating Supply: <span class="font-semibold">{intToString(crypto.circulating_supply,false)}</span></p>
-                            <p class="text-foreground">Market Cap: <span class="font-semibold">{intToString(crypto.market_cap,false)}</span></p>
+                        <div class="grid grid-cols-2 text-sm mt-2">
+                            <p class="text-foreground  whitespace-nowrap text-left">Circ. Supply: <span class="font-semibold">{intToString(crypto.circulating_supply,false)}</span></p>
+                            <p class="text-foreground whitespace-nowrap text-left">Market Cap: <span class="font-semibold">{intToString(crypto.market_cap,false)}</span></p>
                         </div>
-                        <div class="grid grid-cols-3 text-sm mt-2">
-                            {crypto.dailyChange && <p class="text-center">Daily: <span  class={crypto.dailyChange > 0 ? ` "font-semibold text-green-600` : `"font-semibold text-red-600`}>{crypto.dailyChange.toFixed(2)} %</span></p>}
-                            {crypto.weeklyChange && <p class="text-center">Weekly: <span class={crypto.weeklyChange > 0 ? ` "font-semibold text-green-600` : `"font-semibold text-red-600`}>{crypto.weeklyChange.toFixed(2)} %</span></p>}
-                            {crypto.monthlyChange && <p class="text-center">Monthly : <span class={crypto.monthlyChange > 0 ? ` "font-semibold text-green-600` : `"font-bold text-red-600`}>{crypto.monthlyChange.toFixed(2)} %</span></p>}
+                        <div class="grid grid-cols-2 text-sm mt-2">
+                            {crypto.weeklyChange && <p class="text-left">Weekly: <span class={crypto.weeklyChange > 0 ? ` "font-semibold text-green-600` : `"font-semibold text-red-600`}>{crypto.weeklyChange.toFixed(2)} %</span></p>}
+                            {crypto.monthlyChange && <p class="text-left">Monthly : <span class={crypto.monthlyChange > 0 ? ` "font-semibold text-green-600` : `"font-bold text-red-600`}>{crypto.monthlyChange.toFixed(2)} %</span></p>}
                         </div>
                     </CardContent>
                  
