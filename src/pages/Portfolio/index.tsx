@@ -151,16 +151,39 @@ const Portfolio = () => {
             <div class="flex py-2 max-w-screen-xl max-w-container mx-auto w-full flex flex-col items-center justify-start gap-2 px-2">
                 <div class="flex justify-between w-full">
 
-                <span class="text-lg font-semibold text-gray-800 dark:text-gray-300">
-                    Total:
-                    <span class="text-xl md:text-2xl font-bold text-green-600 dark:text-green-400 ml-2">
-                        {" " + intToString(portfolio_data.value.reduce((accumulator, port) => {
-                            return accumulator + port.coins.reduce((accumulator, coin) => {
-                                return accumulator + (Number(coin.amount) * coin.crypto.current_price[0]);
-                            }, 0)
-                        }, 0), true)}
-                    </span>
+                <span class="text-xl md:text-2xl ml-2">
+                    {(() => {
+                        const totals = portfolio_data.value.reduce((accumulator, port) => {
+                            const portTotals = port.coins.reduce((innerAccumulator, coin) => {
+                                let coinValue = Number(coin.amount) * coin.crypto.current_price[0];
+                                innerAccumulator.totalValue += coinValue;
+                                innerAccumulator.totalPnL += coin.pnl; // Accumulate PnL
+
+                                return innerAccumulator;
+                            }, { totalValue: 0, totalPnL: 0 });
+
+                            accumulator.totalValue += portTotals.totalValue;
+                            accumulator.totalPnL += portTotals.totalPnL;
+
+                            return accumulator;
+                        }, { totalValue: 0, totalPnL: 0 });
+
+                        return (
+                            <div class="flex flex-col">
+                                <span class="font-bold">
+                                    ${intToString(totals.totalValue, true)}
+                                </span>
+                                <span class="flex flex-row gap-2 items-center">
+                                    <span class="text-base">24hr Change </span>
+                                    <span className={`${totals.totalPnL < 0 ? 'text-red-600' : 'text-green-600 dark:text-green-400'} text-lg`}>
+                                         ${intToString(totals.totalPnL, true)}
+                                    </span>
+                                </span>
+                            </div>
+                        );
+                    })()}
                 </span>
+
                 <CreatePortfolio />
 
                 </div>

@@ -44,20 +44,34 @@ export const getMarketData = () => {
       }
       if (portfolio_data.value.length > 0) {
         const startTime = performance.now(); // Start timing
-  
+
         portfolio_data.value.forEach(portfolio => {
-          portfolio.coins.forEach(portfolioCoin => {
-            let marketCoin = market_data.value.find(mCoin => mCoin.symbol === portfolioCoin.crypto.symbol);
-              if (marketCoin) {
-                portfolioCoin.crypto = marketCoin;
-              }
-          });
+            portfolio.coins.forEach(portfolioCoin => {
+                let marketCoin = market_data.value.find(mCoin => mCoin.symbol === portfolioCoin.crypto.symbol);
+                if (marketCoin) {
+                    portfolioCoin.crypto = marketCoin;
+
+                    // PnL Calculation
+                    let amountHeld = Number(portfolioCoin.amount);
+                    let currentPrice = marketCoin.current_price[0];
+                    let dailyChangeDecimal = marketCoin.dailyChange / 100; // Convert percentage to decimal
+                    let price24hAgo = currentPrice / (1 + dailyChangeDecimal);
+
+                    let value24hAgo = amountHeld * price24hAgo;
+                    let currentValue = amountHeld * currentPrice;
+
+                    let pnl = currentValue - value24hAgo;
+                    portfolioCoin.pnl = pnl; // Storing the PnL in the coin object
+                    console.log(portfolioCoin)
+                }
+            });
         });
-  
-        const endTime = performance.now(); // End timing
+
+      const endTime = performance.now(); // End timing
+      console.log(`Operation took ${endTime - startTime} milliseconds`);
+
       console.log(cryptos_list.value)
         
-        console.log(`Update Time: ${endTime - startTime} milliseconds`);
       }
   
       // Sort and update table data if needed
