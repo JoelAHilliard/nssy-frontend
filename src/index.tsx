@@ -33,6 +33,15 @@ export function App() {
 			console.log('ServiceWorker registration failed: ', err);
 		  });
 		});
+		self.addEventListener('activate', async (event) => {
+
+			const existingCaches = await caches.keys();
+			const invalidCaches = existingCaches.filter(c => c !== CACHE_NAME);
+			await Promise.all(invalidCaches.map(ic => caches.delete(ic)));
+		
+			// do whatever else you need to...
+		
+		});
 	  }
 	  
 	useEffect(()=>{

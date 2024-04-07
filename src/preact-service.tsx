@@ -16,17 +16,16 @@ export const tableData = signal(null);
 const graphData = {};
 
 
-export const loadPortfolios = () =>{
+export const loadPortfolios = async () =>{
     let portfolios = localStorage.getItem("portfolios");
     portfolio_data.value = JSON.parse(portfolios);
 }
-export const getMarketData = () => {
-    loadPortfolios();
+export const getMarketData = async () => {
+    await loadPortfolios();
     fetch(API_URL)
     .then(res => res.json())
     .then(data => {
       market_data.value = data;
-      console.log(data)
       cryptos_list.value = data.map((crypto) => ({
           "name": crypto.name,
           "symbol": crypto.symbol,
@@ -44,7 +43,6 @@ export const getMarketData = () => {
       }
       if (portfolio_data.value.length > 0) {
         const startTime = performance.now(); // Start timing
-
         portfolio_data.value.forEach(portfolio => {
             portfolio.coins.forEach(portfolioCoin => {
                 let marketCoin = market_data.value.find(mCoin => mCoin.symbol === portfolioCoin.crypto.symbol);
@@ -62,7 +60,6 @@ export const getMarketData = () => {
 
                     let pnl = currentValue - value24hAgo;
                     portfolioCoin.pnl = pnl; // Storing the PnL in the coin object
-                    console.log(portfolioCoin)
                 }
             });
         });
@@ -70,8 +67,6 @@ export const getMarketData = () => {
       const endTime = performance.now(); // End timing
       console.log(`Operation took ${endTime - startTime} milliseconds`);
 
-      console.log(cryptos_list.value)
-        
       }
   
       // Sort and update table data if needed
@@ -99,6 +94,7 @@ export const getGraphData = (params) => {
       return data;
     });
 };
+
 export const getGlobal = () => {
   // Check if data is cached and return it wrapped in a Promise
   if(graphData["global"]){

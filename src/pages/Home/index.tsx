@@ -29,7 +29,6 @@ export function Home() {
 	const [filter,setFilter] = useState("");
 	
 	const handleClick = (filter,dir) => {
-		console.log(filter)
         activeFilter.value = filter;
         const copy = tableData.peek(); // get clone of data
         let team_data = sortTeamsBy(copy, filter,dir);

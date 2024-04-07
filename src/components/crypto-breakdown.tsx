@@ -9,6 +9,8 @@ import { intToString } from "../index";
 import ErrorNotFound from "./error-not-found";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ArrowBigLeft } from "lucide-react";
+import TradingViewWidget from "./TradingViewWidget";
+import { Separator } from "./ui/separator";
 const CryptoBreakdown = (params) => {
     const location = useLocation();
     const [crypto, setCrypto] = useState(null);
@@ -169,7 +171,7 @@ const CryptoBreakdown = (params) => {
                 <div class="mb-3">
                     <Button variant="ghost"><a href="/"><ArrowBigLeft/></a></Button>
                 </div>
-                <Card className="lg:max-w-[40%] mx-auto">
+                <Card className="lg:max-w-[100%] mx-auto">
                     <CardHeader>
                         <div class="grid grid-cols-2">
                             <div class="flex items-center">
@@ -194,12 +196,18 @@ const CryptoBreakdown = (params) => {
                             {crypto.weeklyChange && <p class="text-left">Weekly: <span class={crypto.weeklyChange > 0 ? ` "font-semibold text-green-600` : `"font-semibold text-red-600`}>{crypto.weeklyChange.toFixed(2)} %</span></p>}
                             {crypto.monthlyChange && <p class="text-left">Monthly : <span class={crypto.monthlyChange > 0 ? ` "font-semibold text-green-600` : `"font-bold text-red-600`}>{crypto.monthlyChange.toFixed(2)} %</span></p>}
                         </div>
+                        <Separator class="py-4"/>
+                        <div class="lg:h-[600px] h-[400px] py-4">
+                            <TradingViewWidget crypto={crypto}/>
+                        </div>
+                   
+
                     </CardContent>
                  
                 </Card>
 
                 
-                <HighchartsReact
+                {/* <HighchartsReact
                     highcharts={Highcharts}
                     options={options}
                 />
@@ -209,7 +217,7 @@ const CryptoBreakdown = (params) => {
                             <Button size="sm" onClick={() => setTimeframe(tf[0])}>{tf[1]}</Button>
                         )
                     })}
-                </div>
+                </div> */}
             </div>
         )
 }

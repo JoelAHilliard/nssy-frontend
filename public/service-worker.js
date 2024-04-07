@@ -1,7 +1,10 @@
 // @ts-nocheck
 // Define the cache name
 const CACHE_NAME = 'your-app-cache-v1';
+// service-worker.js
+// Version: 1.new.2
 
+// Rest of your service worker code...
 // Specify the resources you want to cache
 const urlsToCache = [
   '/',
@@ -29,6 +32,9 @@ self.addEventListener('fetch', event => {
         // Cache hit - return response
         if (response) {
           return response;
+
+
+          
         }
 
         return fetch(event.request).then(
