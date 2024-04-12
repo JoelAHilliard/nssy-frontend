@@ -21,7 +21,38 @@ import { cryptos_list, cryptos_map } from "@/preact-service";
 const activeFilter = signal("market_cap_rank");
 
 const tableHTML = signal(null);
-
+function formatSmallNumber(number) {
+	// Parse the number using Number.parseFloat()
+	const parsedNumber = Number.parseFloat(number);
+  
+	// Convert the parsed number to a string in scientific notation
+	let numberString = parsedNumber.toExponential();
+  
+	// Split the string into parts before and after the 'e'
+	let parts = numberString.split('e');
+  
+	// Extract the base and exponent
+	let base = parts[0];
+	let exponent = parseInt(parts[1], 10);
+  
+	// Split the base into parts before and after the decimal point
+	let baseParts = base.split('.');
+  
+	// Extract the significant figures after the decimal point
+	let significantFigures = baseParts[1];
+  
+	// Calculate the number of leading zeros based on the exponent
+	let leadingZeros = Math.abs(exponent) - 1;
+  
+	const formattedNumber = (
+	  <span>
+		0.0<sub>{leadingZeros}</sub>
+		{significantFigures}
+	  </span>
+	);
+  
+	return formattedNumber;
+  }
 export function Home() {
 	const [startIndex,setStartIndex] = useState(0);
 	const [endIndex,setEndIndex] = useState(100);
@@ -36,24 +67,20 @@ export function Home() {
     };
 
 	function sortTeamsBy(alltimeStats, filter, dir) {
+
+		console.log(alltimeStats)
+
+		console.log(filter)
         //create copy
         let team_arr = [...alltimeStats]
 
         //sport by filter
         if(dir == 'a'){
-			if(filter=="current_price"){
-            	team_arr.sort((a,b) => a[String(filter)][0] - b[String(filter)][0])
-			} else {
-            	team_arr.sort((a,b) => a[String(filter)] - b[String(filter)])
-			}
+			team_arr.sort((a,b) => a[String(filter)] - b[String(filter)])
         } else {
-			if(filter=="current_price"){
-				team_arr.sort((a,b) => b[String(filter)][0] - a[String(filter)][0])
-			} else {
-				team_arr.sort((a,b) => b[String(filter)] - a[String(filter)])
-			}
+			team_arr.sort((a,b) => b[String(filter)] - a[String(filter)])
         }
-        
+        console.log(team_arr)
         return team_arr
     }
 	function intToString(num, fixed) {
@@ -94,13 +121,13 @@ export function Home() {
 											<DropDownMenu  activeFilter={activeFilter}  callback={handleClick} filter={"current_price"} name="Price"/>
 										</TableHead>
 										<TableHead>
-											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"dailyChange"} name="Daily" />
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"price_change_percentage_24h_in_currency"} name="Daily" />
 										</TableHead>
 										<TableHead>
-											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"weeklyChange"} name="Weekly" />
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"price_change_percentage_7d_in_currency"} name="Weekly" />
 										</TableHead>
 										<TableHead>
-											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"monthlyChange"} name="Monthly" />
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"price_change_percentage_30d_in_currency"} name="Monthly" />
 										</TableHead>
 										<TableHead>
 											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"circulating_supply"} name="Circ. Supply"/>
@@ -131,7 +158,7 @@ export function Home() {
 
 															<TableCell className="font-medium text-xs table-cell sticky-col first-col transition-colors px-0 sticky">
 																	<a class="flex items-center bg-background" href={"/" + crypto.symbol}>
-																		<img class="w-[24px] h-[24px] rounded-full bg-background" src={crypto.img}></img>
+																		<img class="w-[24px] h-[24px] rounded-full bg-background" src={crypto.image}></img>
 																		<div>
 
 																			<p class="bg-card min-w-[60px] px-2 whitespace-break-spaces">{crypto.name}</p>
@@ -143,21 +170,21 @@ export function Home() {
 															</TableCell>
 															<TableCell className="font-medium text-center table-cell">
 																<a href={"/" + crypto.symbol}>
-																${crypto.current_price[0]}
+																${crypto.current_price.toFixed(2) < 0.0001 ? formatSmallNumber(crypto.current_price) : crypto.current_price }
 																</a>
 															</TableCell>
 															
 															<TableCell className="font-medium text-center table-cell">
-																{crypto.dailyChange ? (
-																	crypto.dailyChange > 0 ? (
+																{crypto.price_change_percentage_24h_in_currency ? (
+																	crypto.price_change_percentage_24h_in_currency > 0 ? (
 																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-green-600">
 																		<ChevronUp size="16px" color="green" />
-																		{crypto.dailyChange.toFixed(2)}%
+																		{crypto.price_change_percentage_24h_in_currency.toFixed(2)}%
 																	</a>
 																	) : (
 																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-red-600">
 																		<ChevronDown size="16px" color="red" />
-																		{crypto.dailyChange.toFixed(2)}%
+																		{crypto.price_change_percentage_24h_in_currency.toFixed(2)}%
 																	</a>
 																	)
 																) : (
@@ -167,16 +194,16 @@ export function Home() {
 																)}
 															</TableCell>
 															<TableCell className="font-medium text-center table-cell">
-																{crypto.weeklyChange ? (
-																	crypto.weeklyChange > 0 ? (
+																{crypto.price_change_percentage_7d_in_currency ? (
+																	crypto.price_change_percentage_7d_in_currency > 0 ? (
 																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-green-600">
 																		<ChevronUp size="16px" color="green" />
-																		{crypto.weeklyChange.toFixed(2)}%
+																		{crypto.price_change_percentage_7d_in_currency.toFixed(2)}%
 																	</a>
 																	) : (
 																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-red-600">
 																		<ChevronDown size="16px" color="red" />
-																		{crypto.weeklyChange.toFixed(2)}%
+																		{crypto.price_change_percentage_7d_in_currency.toFixed(2)}%
 																	</a>
 																	)
 																) : (
@@ -186,16 +213,16 @@ export function Home() {
 																)}
 															</TableCell>
 															<TableCell className="font-medium text-center table-cell">
-																{crypto.monthlyChange ? (
-																	crypto.monthlyChange > 0 ? (
+																{crypto.price_change_percentage_30d_in_currency ? (
+																	crypto.price_change_percentage_30d_in_currency > 0 ? (
 																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-green-600">
 																		<ChevronUp size="16px" color="green" />
-																		{crypto.monthlyChange.toFixed(2)}%
+																		{crypto.price_change_percentage_30d_in_currency.toFixed(2)}%
 																	</a>
 																	) : (
 																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-red-600">
 																		<ChevronDown size="16px" color="red" />
-																		{crypto.monthlyChange.toFixed(2)}%
+																		{crypto.price_change_percentage_30d_in_currency.toFixed(2)}%
 																	</a>
 																	)
 																) : (

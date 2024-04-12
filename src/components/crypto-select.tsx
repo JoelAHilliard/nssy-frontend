@@ -6,9 +6,20 @@ import { Label } from "@/components/ui/label";
 
 const CryptoSelector = ({ cryptosList, onSelect }) => {
   const [filter, setFilter] = useState("");
+  const [showCount, setShowCount] = useState(10);
+
+  const filteredCryptos = cryptosList.filter(
+    crypto =>
+      crypto.name.toLowerCase().includes(filter.toLowerCase()) ||
+      crypto.symbol.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  const handleShowMore = () => {
+    setShowCount(prevCount => prevCount + 10);
+  };
 
   return (
-    <div class="relative w-full">
+    <div class="relative w-full max-h-[200px]">
       <div class="">
         <Label>Select crypto</Label>
         <div class="flex items-center">
@@ -22,13 +33,12 @@ const CryptoSelector = ({ cryptosList, onSelect }) => {
           />
         </div>
       </div>
-      <div class="relative flex flex-col w-full gap-1 overflow-y-scroll max-h-[300px]">
+      <div class="relative flex flex-col w-full gap-1 overflow-y-scroll max-h-[170px]">
         <div class="overflow-y-scroll max-h-[300px] mt-3">
-          {cryptosList.filter(
-            crypto =>
-              crypto.name.toLowerCase().includes(filter.toLowerCase()) ||
-              crypto.symbol.toLowerCase().includes(filter.toLowerCase())
-          ).slice(0, 70).map((crypto => (
+          {filteredCryptos.slice(0, showCount).map((crypto) => {
+            console.log(crypto)
+            
+            return (
             <div class="w-full text-left" onClick={() => onSelect(crypto)}>
               <Button className="w-full text-left flex gap-2 items-center justify-between px-1" variant="ghost">
                 <div class="flex items-center gap-2 py-1">
@@ -47,9 +57,13 @@ const CryptoSelector = ({ cryptosList, onSelect }) => {
                 )}
               </Button>
             </div>
-          )))}
+          )})}
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent pointer-events-none"></div>
+        {showCount < filteredCryptos.length && (
+          <Button variant="ghost" onClick={handleShowMore} className="mt-2">
+            Show More
+          </Button>
+        )}
       </div>
     </div>
   );

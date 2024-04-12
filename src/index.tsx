@@ -21,28 +21,30 @@ export function intToString(num, fixed) {
 		e = d + ['', 'K', 'M', 'B', 'T'][k]; 
 	return e;
 }
+import { Toaster } from "@/components/ui/sonner"
+
 export function App() {
 
-	if ('serviceWorker' in navigator) {
-		window.addEventListener('load', function() {
-		  navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-			// Registration was successful
-			console.log('ServiceWorker registration successful with scope: ', registration.scope);
-		  }, function(err) {
-			// registration failed :(
-			console.log('ServiceWorker registration failed: ', err);
-		  });
-		});
-		self.addEventListener('activate', async (event) => {
+	// if ('serviceWorker' in navigator) {
+	// 	window.addEventListener('load', function() {
+	// 	  navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+	// 		// Registration was successful
+	// 		console.log('ServiceWorker registration successful with scope: ', registration.scope);
+	// 	  }, function(err) {
+	// 		// registration failed :(
+	// 		console.log('ServiceWorker registration failed: ', err);
+	// 	  });
+	// 	});
+	// 	self.addEventListener('activate', async (event) => {
 
-			const existingCaches = await caches.keys();
-			const invalidCaches = existingCaches.filter(c => c !== CACHE_NAME);
-			await Promise.all(invalidCaches.map(ic => caches.delete(ic)));
+	// 		const existingCaches = await caches.keys();
+	// 		const invalidCaches = existingCaches.filter(c => c !== CACHE_NAME);
+	// 		await Promise.all(invalidCaches.map(ic => caches.delete(ic)));
 		
-			// do whatever else you need to...
+	// 		// do whatever else you need to...
 		
-		});
-	  }
+	// 	});
+	//   }
 	  
 	useEffect(()=>{
 		getMarketData();
@@ -63,6 +65,7 @@ export function App() {
 							<Route path="/portfolio" component={Portfolio} />
 							<Route default path="*" component={CryptoBreakdown} />
 						</Router>
+						<Toaster />
 					</div>
 
 				</LocationProvider>

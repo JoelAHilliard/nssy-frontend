@@ -175,14 +175,14 @@ const CryptoBreakdown = (params) => {
                     <CardHeader>
                         <div class="grid grid-cols-2">
                             <div class="flex items-center">
-                                <img class="w-[24px] h-[24px] rounded-full" src={crypto.img}></img>
+                                <img class="w-[24px] h-[24px] rounded-full" src={crypto.image}></img>
                                 <p class="text-xl font-semibold text-foreground flex items-center gap-1">{crypto.name} <span class="text-base text-gray-500">{crypto.symbol}</span></p>
                             </div>
                             
-                            <p class="text-xl text-foreground">$<span class="font-bold">{crypto.current_price[0]}</span>   
+                            <p class="text-xl text-foreground">$<span class="font-bold">{crypto.current_price}</span>   
                             
                             <span>
-                                {crypto.dailyChange && <span class={crypto.dailyChange > 0 ? `text-left text-green-600`: `text-left text-red-600`}> {crypto.dailyChange.toFixed(2)}%</span>}
+                                {crypto.price_change_percentage_24h_in_currency && <span class={crypto.price_change_percentage_24h_in_currency > 0 ? `text-left text-green-600`: `text-left text-red-600`}> {crypto.price_change_percentage_24h_in_currency.toFixed(2)}%</span>}
                             </span>
                             </p>
                         </div>
@@ -193,8 +193,8 @@ const CryptoBreakdown = (params) => {
                             <p class="text-foreground whitespace-nowrap text-left">Market Cap: <span class="font-semibold">{intToString(crypto.market_cap,false)}</span></p>
                         </div>
                         <div class="grid grid-cols-2 text-sm mt-2">
-                            {crypto.weeklyChange && <p class="text-left">Weekly: <span class={crypto.weeklyChange > 0 ? ` "font-semibold text-green-600` : `"font-semibold text-red-600`}>{crypto.weeklyChange.toFixed(2)} %</span></p>}
-                            {crypto.monthlyChange && <p class="text-left">Monthly : <span class={crypto.monthlyChange > 0 ? ` "font-semibold text-green-600` : `"font-bold text-red-600`}>{crypto.monthlyChange.toFixed(2)} %</span></p>}
+                            {crypto.price_change_percentage_7d_in_currency && <p class="text-left">Weekly: <span class={crypto.price_change_percentage_7d_in_currency > 0 ? ` "font-semibold text-green-600` : `"font-semibold text-red-600`}>{crypto.price_change_percentage_7d_in_currency.toFixed(2)} %</span></p>}
+                            {crypto.price_change_percentage_30d_in_currency && <p class="text-left">Monthly : <span class={crypto.price_change_percentage_30d_in_currency > 0 ? ` "font-semibold text-green-600` : `"font-bold text-red-600`}>{crypto.price_change_percentage_30d_in_currency.toFixed(2)} %</span></p>}
                         </div>
                         <Separator class="py-4"/>
                         <div class="lg:h-[600px] h-[400px] py-4">

@@ -13,7 +13,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import {
   Popover,
   PopoverContent,
@@ -22,10 +22,14 @@ import {
 import { Edit2, TrashIcon } from "lucide-react";
 import CryptoSelector from "@/components/crypto-select";
 import { Separator } from "@/components/ui/separator";
-export function Edit({ portfolio }) {
+export function Edit({ portfolio, handleDelete }) {
   const portfolio_name = portfolio;
-  const port = portfolio_data.value.find((c) => c.name === portfolio_name);
-  console.log(port)
+  const port = portfolio_data.value.find((c) => c.name === portfolio);
+
+  if(!port) {
+    handleDelete(portfolio_data.value[0])
+    return;
+  }
   const [editedName, setEditedName] = useState(portfolio_name);
   const [showAdd, setShowAdd] = useState(false);
   const [editedDescription, setEditedDescription] = useState(port.description);
@@ -58,25 +62,27 @@ export function Edit({ portfolio }) {
     );
 
     portfolio_data.value = updatedPortfolioData;
+    setAddedCryptos([]);
+    setOpen(false);
+
   };
 
-  const handleDelete = (c) => {
+  const handleDeleteEdit = (c) => {
+
     const updatedPortfolio = {...port, coins:[]};
     for(let i =0; i < port.coins.length;i++){
       if(port.coins[i].crypto != c.crypto){
         updatedPortfolio.coins.push(port.coins[i])
       }
     }
-    console.log(updatedPortfolio)
     const updatedPortfolioData = portfolio_data.value.map((p) =>
       p.name === portfolio_name ? updatedPortfolio : p
     );
-    console.log(updatedPortfolioData)
-    console.log(editedCoins)
     const temp = editedCoins.filter((unit)=> unit.crypto !== c.crypto);
-    console.log(temp)
     setEditedCoins(temp);
     portfolio_data.value = updatedPortfolioData;
+    setOpen(false);
+
   }
 
   const handleShowAdd = () => {
@@ -88,6 +94,7 @@ export function Edit({ portfolio }) {
       p.name !== portfolio_name
     );
     portfolio_data.value = updatedPortfolioData;
+    handleDelete();
     setOpen(false);
   }
   const handleAddCrypto = () =>{
@@ -105,10 +112,15 @@ export function Edit({ portfolio }) {
 
   const removeFromAdded = (crypto) => {
     const arr = addedCryptos.filter((c)=> c.crypto.name !== crypto.crypto.name)
-    console.log(arr)
     setAddedCryptos(arr);
   }
-
+  useEffect(() => {
+    if (port) {
+      setEditedName(port.name);
+      setEditedDescription(port.description);
+      setEditedCoins(port.coins);
+    }
+  }, [port]);
   return (
     <div >
       <Dialog open={open} onOpenChange={setOpen} className="fixed inset-0 flex items-center justify-center z-50">
@@ -154,9 +166,9 @@ export function Edit({ portfolio }) {
             {editedCoins.map((c, index) => (
               <div key={index} className="flex items-center gap-4">
                 <div class="flex items-center gap-4 w-full">
-                  <TrashIcon onClick={()=>handleDelete(c)} className="h-8 text-red-600"/>
+                  <TrashIcon onClick={()=>handleDeleteEdit(c)} className="h-8 text-red-600"/>
                   <Label htmlFor={`coin-${index}`} className="text-right flex flex-row items-center gap-1">
-                    <img class="h-4 w-4" src={cryptos_map.value[c.crypto].img} />
+                    <img class="h-4 w-4" src={cryptos_map.value[c.crypto].image} />
                     <span class="text-left text-base">{c.crypto}</span>
                   </Label>
                 </div>
@@ -173,12 +185,11 @@ export function Edit({ portfolio }) {
             <div class="w-full">
             {addedCryptos.length > 0 && <Label>Coins to add</Label>}
               {addedCryptos.map((crypto)=>{
-                
                 return (
                   <div onClick={()=>{removeFromAdded(crypto)}}>
                     <div class="flex w-full justify-between h-8">
                       <div class="flex flex-row items-center gap-2">
-                        <img class="h-4 w-4" src={cryptos_map.value[crypto.crypto].img} />
+                        <img class="h-4 w-4" src={cryptos_map.value[crypto.crypto].image} />
                         <span>{crypto.crypto}</span>
                       </div>
                       <span>{crypto.amount}</span>

@@ -28,6 +28,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@/components/ui/dropdown-menu";
 import PortfolioDropdown from "./components/portfolio-select";
 import PortfolioTable from "./components/portfolio-table";
+import PortQRCode from "@/components/portfolio-qr-code";
+import { Dialog, DialogContent, DialogTrigger } from "@radix-ui/react-dialog";
 
 const activeFilter = signal("market_cap");
 
@@ -41,15 +43,17 @@ const Portfolio = () => {
     const [port,setActivePort] = useState(null);
     const [portOptions,setPortOptions] = useState(null);
     const [showCreate,setShowCreate] = useState(false);
+    const [showQRCode,setShowQRCode] = useState(false);
 
     useEffect(() => {
         if (portfolio_data.value && cryptos_map.value) {
+          if(!port) setActivePort(portfolio_data.value[0])
           let totalValue = 0;
           portfolio_data.value.forEach((port) => {
             let portValue = 0;
             port.coins.forEach((coin) => {
               if (cryptos_map.value[coin.crypto]) {
-                portValue += coin.amount * cryptos_map.value[coin.crypto].current_price[0];
+                portValue += coin.amount * cryptos_map.value[coin.crypto].current_price;
               }
             });
             totalValue += portValue;
@@ -58,14 +62,28 @@ const Portfolio = () => {
         }
     }, [portfolio_data.value, cryptos_map.value]);
 
+    const handleSetActivePort = (a) => {
+        setActivePort(a);
+    }
+    
+
+    useEffect(()=>{
+        console.log(port);
+        console.log(!port)
+        if(!port) {
+            setShowCreate(true);
+        } else {
+            setShowCreate(false);
+        }
+    },[port])
+    
     useEffect(()=>{
         if(!port) return
         
         setActivePortName(port.name);
 
     },[port])
-
-    
+    console.log(port)
     if (cryptos_list.value.length == 0 || cryptos_map.value.length == 0 || !portfolio_data.value) {
         return <div class="flex py-2 max-w-screen-xl max-w-container mx-auto w-full flex flex-col items-center justify-start gap-2 px-2"><Skeleton className="h-[500px] w-full" /></div>;
     }
@@ -92,7 +110,7 @@ const Portfolio = () => {
                             cryptosMap={cryptos_map.value}
                             activePortName={activePortName}
                             setActivePortName={setActivePortName}
-                            setActivePort={setActivePort}
+                            setActivePort={handleSetActivePort}
                             setShowCreate={setShowCreate}
                         />
                     
@@ -102,7 +120,21 @@ const Portfolio = () => {
                     {showCreate && <Create />}
 
                     {(port && !showCreate) &&
-                        <PortfolioTable portfolioName={port.name} /> 
+                    <div class="w-full">
+
+                        <PortfolioTable portfolioName={port.name} setActivePort={handleSetActivePort}/>
+                        
+                        {/* <div>
+                            <Button onClick={()=>setShowQRCode(!showQRCode)}>Show Data</Button>
+                        </div>
+                        
+                        {showQRCode &&
+                            <div>
+                                <PortQRCode />
+                            </div>
+                        } */}
+
+                    </div>
                     }
                 </div>
         )
