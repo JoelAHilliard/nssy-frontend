@@ -26,9 +26,16 @@ export const loadPortfolios = async () =>{
 export const getMarketData = async () => {
     await loadPortfolios();
     
-    const coingecko_api = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=600&page=1&sparkline=false&price_change_percentage=24h%2C7d%2C30d&locale=en";
-    
-    fetch(coingecko_api)
+    // const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd';
+    const url = API_URL;
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        'x-cg-demo-api-key': 'CG-tk9DXKWBwJCmTo8kEmB1JuZ7	'
+      }
+    };
+    fetch(url,options)
     .then(res => res.json())
     .then(data => {
       market_data.value = data;
@@ -36,7 +43,7 @@ export const getMarketData = async () => {
           "name": crypto.name,
           "symbol": crypto.symbol,
           "img": crypto.image,
-          "daily": crypto.price_change_percentage_24h_in_currency,
+          "daily": crypto.dailyChange,
       }));
       cryptos_map.value =  data.reduce((map, crypto) => {
               map[crypto.name] = crypto;
@@ -57,8 +64,8 @@ export const getMarketData = async () => {
 
                     // PnL Calculation
                     let amountHeld = Number(portfolioCoin.amount);
-                    let currentPrice = marketCoin.current_price;
-                    let dailyChangeDecimal = marketCoin.price_change_percentage_24h_in_currency / 100; // Convert percentage to decimal
+                    let currentPrice = marketCoin.current_price[0];
+                    let dailyChangeDecimal = marketCoin.dailyChange / 100; // Convert percentage to decimal
                     let price24hAgo = currentPrice / (1 + dailyChangeDecimal);
 
                     let value24hAgo = amountHeld * price24hAgo;

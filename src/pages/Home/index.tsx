@@ -158,7 +158,7 @@ export function Home() {
 
 															<TableCell className="font-medium text-xs table-cell sticky-col first-col transition-colors px-0 sticky">
 																	<a class="flex items-center bg-background" href={"/" + crypto.symbol}>
-																		<img class="w-[24px] h-[24px] rounded-full bg-background" src={crypto.image}></img>
+																		<img class="w-[24px] h-[24px] rounded-full bg-background" src={crypto.img}></img>
 																		<div>
 
 																			<p class="bg-card min-w-[60px] px-2 whitespace-break-spaces">{crypto.name}</p>
@@ -170,21 +170,21 @@ export function Home() {
 															</TableCell>
 															<TableCell className="font-medium text-center table-cell">
 																<a href={"/" + crypto.symbol}>
-																${crypto.current_price.toFixed(2) < 0.0001 ? formatSmallNumber(crypto.current_price) : crypto.current_price }
+																${crypto.current_price[0].toFixed(2) < 0.0001 ? formatSmallNumber(crypto.current_price[0]) : crypto.current_price[0] }
 																</a>
 															</TableCell>
 															
 															<TableCell className="font-medium text-center table-cell">
-																{crypto.price_change_percentage_24h_in_currency ? (
-																	crypto.price_change_percentage_24h_in_currency > 0 ? (
+																{crypto.dailyChange ? (
+																	crypto.dailyChange > 0 ? (
 																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-green-600">
 																		<ChevronUp size="16px" color="green" />
-																		{crypto.price_change_percentage_24h_in_currency.toFixed(2)}%
+																		{crypto.dailyChange.toFixed(2)}%
 																	</a>
 																	) : (
 																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-red-600">
 																		<ChevronDown size="16px" color="red" />
-																		{crypto.price_change_percentage_24h_in_currency.toFixed(2)}%
+																		{crypto.dailyChange.toFixed(2)}%
 																	</a>
 																	)
 																) : (
@@ -194,16 +194,16 @@ export function Home() {
 																)}
 															</TableCell>
 															<TableCell className="font-medium text-center table-cell">
-																{crypto.price_change_percentage_7d_in_currency ? (
-																	crypto.price_change_percentage_7d_in_currency > 0 ? (
+																{crypto.weeklyChange ? (
+																	crypto.weeklyChange > 0 ? (
 																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-green-600">
 																		<ChevronUp size="16px" color="green" />
-																		{crypto.price_change_percentage_7d_in_currency.toFixed(2)}%
+																		{crypto.weeklyChange.toFixed(2)}%
 																	</a>
 																	) : (
 																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-red-600">
 																		<ChevronDown size="16px" color="red" />
-																		{crypto.price_change_percentage_7d_in_currency.toFixed(2)}%
+																		{crypto.weeklyChange.toFixed(2)}%
 																	</a>
 																	)
 																) : (
@@ -213,16 +213,16 @@ export function Home() {
 																)}
 															</TableCell>
 															<TableCell className="font-medium text-center table-cell">
-																{crypto.price_change_percentage_30d_in_currency ? (
-																	crypto.price_change_percentage_30d_in_currency > 0 ? (
+																{crypto.monthlyChange ? (
+																	crypto.monthlyChange > 0 ? (
 																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-green-600">
 																		<ChevronUp size="16px" color="green" />
-																		{crypto.price_change_percentage_30d_in_currency.toFixed(2)}%
+																		{crypto.monthlyChange.toFixed(2)}%
 																	</a>
 																	) : (
 																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-red-600">
 																		<ChevronDown size="16px" color="red" />
-																		{crypto.price_change_percentage_30d_in_currency.toFixed(2)}%
+																		{crypto.monthlyChange.toFixed(2)}%
 																	</a>
 																	)
 																) : (

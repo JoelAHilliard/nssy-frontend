@@ -53,7 +53,7 @@ const Portfolio = () => {
             let portValue = 0;
             port.coins.forEach((coin) => {
               if (cryptos_map.value[coin.crypto]) {
-                portValue += coin.amount * cryptos_map.value[coin.crypto].current_price;
+                portValue += coin.amount * cryptos_map.value[coin.crypto].current_price[0];
               }
             });
             totalValue += portValue;
@@ -98,14 +98,15 @@ const Portfolio = () => {
         if(port == null) setActivePort(portfolio_data.value[0])
         return (
                 <div class="flex py-2 max-w-screen-xl max-w-container mx-auto w-full flex flex-col items-center justify-start gap-2 px-2">
-                    <div class="flex items-start flex-col w-full gap-2">
-                        <div className="inline-flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
-                        <span className="relative inline-block px-6 py-3 text-lg font-bold transition duration-300 ease-in-out transform hover:scale-102 hover:shadow-md group mr-2">
-                            <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 transition duration-300 ease-in-out group-hover:opacity-100 rounded-l-lg"></span>
-                            <span className="relative z-10 text-gray-800 dark:text-gray-100 transition duration-300 ease-in-out group-hover:text-white">
-                                Combined Value: {total_port_value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                    <div class="flex justify-between flex-col w-full gap-2 lg:flex-row">
+                        <div className="inline-flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md items-center justify-center">
+                            <span className="relative inline-block px-6 py-3 whitespace-nowrap font-bold transition duration-300 ease-in-out transform hover:scale-102 hover:shadow-md group w-full mx-auto">
+                                <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 transition duration-300 ease-in-out group-hover:opacity-100 rounded-lg"></span>
+                                <span className="relative z-10 text-gray-800 dark:text-gray-100 transition duration-300 ease-in-out group-hover:text-white text-center mx-auto flex justify-center">
+                                    Combined Value: {total_port_value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                                </span>
                             </span>
-                        </span>
+                        </div>
                         <PortfolioDropdown
                             cryptosMap={cryptos_map.value}
                             activePortName={activePortName}
@@ -113,8 +114,6 @@ const Portfolio = () => {
                             setActivePort={handleSetActivePort}
                             setShowCreate={setShowCreate}
                         />
-                    
-                        </div>
                     </div>
 
                     {showCreate && <Create />}

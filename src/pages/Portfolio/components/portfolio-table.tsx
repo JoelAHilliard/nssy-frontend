@@ -14,7 +14,7 @@ const PortfolioTable = ({portfolioName, handleDelete}) =>{
           type: 'pie',
           name: 'Coin Percentage',
           data: port.coins.map(coin => {
-            const price = cryptos_map.value[coin.crypto] ? cryptos_map.value[coin.crypto].current_price : null;
+            const price = cryptos_map.value[coin.crypto] ? cryptos_map.value[coin.crypto].current_price[0] : null;
             return ({
                 name: coin.crypto,
                 y: coin.amount * price // Assumes getCoinPrice() returns the current price of the coin in USD
@@ -50,7 +50,7 @@ const PortfolioTable = ({portfolioName, handleDelete}) =>{
     let activePortVal = 0;
                                 
     for(let i = 0;i<port.coins.length;i++){
-        activePortVal += port.coins[i].amount * cryptos_map.value[port.coins[i].crypto].current_price
+        activePortVal += port.coins[i].amount * cryptos_map.value[port.coins[i].crypto].current_price[0]
     }
 
     if(!port) return <span>port null</span>
@@ -96,7 +96,7 @@ const PortfolioTable = ({portfolioName, handleDelete}) =>{
                                 <TableRow key={index}>
                                     <TableCell className="font-medium flex flex-row items-center">
                                     <Avatar className="h-8 w-8 flex flex-row">
-                                        <AvatarImage src={coinData.image ? coinData.image : null} />
+                                        <AvatarImage src={coinData.img ? coinData.img : null} />
                                         <AvatarFallback>{coinData.symbol}</AvatarFallback>
                                     </Avatar>
                                     <div class="flex flex-col ml-1">
@@ -105,18 +105,18 @@ const PortfolioTable = ({portfolioName, handleDelete}) =>{
                                     </div>
                                     </TableCell>
                                     <TableCell>{crypto.amount}</TableCell>
-                                    <TableCell>{coinData.current_price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</TableCell>
+                                    <TableCell>{coinData.current_price[0].toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</TableCell>
                                     <TableCell className="font-medium text-left table-cell">
-                                        {coinData.price_change_percentage_24h_in_currency ? (
-                                            coinData.price_change_percentage_24h_in_currency > 0 ? (
+                                        {coinData.dailyChange ? (
+                                            coinData.dailyChange > 0 ? (
                                             <a href={"/" + coinData.symbol} class="flex items-start justify-start gap-0.5 text-green-600">
                                                 <ChevronUp size="16px" color="green" />
-                                                {coinData.price_change_percentage_24h_in_currency.toFixed(2)}%
+                                                {coinData.dailyChange.toFixed(2)}%
                                             </a>
                                             ) : (
                                             <a href={"/" + coinData.symbol} class="flex items-start justify-start gap-0.5 text-red-600">
                                                 <ChevronDown size="16px" color="red" />
-                                                {coinData.price_change_percentage_24h_in_currency.toFixed(2)}%
+                                                {coinData.dailyChange.toFixed(2)}%
                                             </a>
                                             )
                                         ) : (
@@ -126,16 +126,16 @@ const PortfolioTable = ({portfolioName, handleDelete}) =>{
                                         )}
                                     </TableCell>
                                     <TableCell className="font-medium text-left table-cell">
-                                        {coinData.price_change_percentage_24h_in_currency ? (
-                                            coinData.price_change_percentage_24h_in_currency > 0 ? (
+                                        {coinData.dailyChange ? (
+                                            coinData.dailyChange > 0 ? (
                                             <a href={"/" + coinData.symbol} class="flex items-start justify-start gap-0.5 text-green-600">
                                                 <ChevronUp size="16px" color="green" />
-                                                {coinData.price_change_percentage_24h_in_currency.toFixed(2)}%
+                                                {coinData.dailyChange.toFixed(2)}%
                                             </a>
                                             ) : (
                                             <a href={"/" + coinData.symbol} class="flex items-start justify-start gap-0.5 text-red-600">
                                                 <ChevronDown size="16px" color="red" />
-                                                {coinData.price_change_percentage_24h_in_currency.toFixed(2)}%
+                                                {coinData.dailyChange.toFixed(2)}%
                                             </a>
                                             )
                                         ) : (
@@ -145,16 +145,16 @@ const PortfolioTable = ({portfolioName, handleDelete}) =>{
                                         )}
                                     </TableCell>
                                     <TableCell className="font-medium text-left table-cell">
-                                        {coinData.price_change_percentage_30d_in_currency ? (
-                                            coinData.price_change_percentage_30d_in_currency > 0 ? (
+                                        {coinData.monthlyChange ? (
+                                            coinData.monthlyChange > 0 ? (
                                             <a href={"/" + coinData.symbol} class="flex items-start justify-start gap-0.5 text-green-600">
                                                 <ChevronUp size="16px" color="green" />
-                                                {coinData.price_change_percentage_30d_in_currency.toFixed(2)}%
+                                                {coinData.monthlyChange.toFixed(2)}%
                                             </a>
                                             ) : (
                                             <a href={"/" + coinData.symbol} class="flex items-start justify-start gap-0.5 text-red-600">
                                                 <ChevronDown size="16px" color="red" />
-                                                {coinData.price_change_percentage_30d_in_currency.toFixed(2)}%
+                                                {coinData.monthlyChange.toFixed(2)}%
                                             </a>
                                             )
                                         ) : (
@@ -163,7 +163,7 @@ const PortfolioTable = ({portfolioName, handleDelete}) =>{
                                             </a>
                                         )}
                                     </TableCell>
-                                    <TableCell className="text-right">{(coinData.current_price * crypto.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</TableCell>
+                                    <TableCell className="text-right">{(coinData.current_price[0] * crypto.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</TableCell>
                                 </TableRow>
                             );
                         })

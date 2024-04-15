@@ -170,7 +170,7 @@ const Create = (props) => {
                                             className="pr-12"
                                         />
                                         <span className="absolute right-2 top-1/2 transform -translate-y-1/2 mr-2 text-muted-foreground">
-                                            = {(parseFloat(selectedCryptos[key].amount) * cryptos_map.value[selectedCryptos[key].crypto].current_price).toLocaleString("en-US", {style:"currency", currency:"USD"})}
+                                            = {(parseFloat(selectedCryptos[key].amount) * cryptos_map.value[selectedCryptos[key].crypto].current_price[0]).toLocaleString("en-US", {style:"currency", currency:"USD"})}
                                         </span>
                                     </TableCell>
                                 </TableRow>

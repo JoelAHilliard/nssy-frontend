@@ -21,18 +21,18 @@ const PortfolioDropdown = ({ cryptosMap, activePortName, setActivePortName, setA
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="ghost" className="rounded-l-none">
-          <span className="underline">Select Portfolio ({portfolio_data.value.length})</span>
+        <Button className="p-0">
+          <DropdownMenuTrigger className='rounded p-2 w-full'>
+              <span className="underline w-full">Select Portfolio ({portfolio_data.value.length})</span>
+          </DropdownMenuTrigger>
         </Button>
-      </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="portfolio-list">
             {(provided) => {return (
               <DropdownMenuRadioGroup {...provided.droppableProps} ref={provided.innerRef} value={activePortName} onValueChange={setActivePortName}>
                 {portfolio_data.value.length > 0 && portfolio_data.value.map((port, index) => {
-                  const portValue = port.coins.reduce((acc, coin) => acc + cryptosMap[coin.crypto].current_price * coin.amount, 0);
+                  const portValue = port.coins.reduce((acc, coin) => acc + cryptosMap[coin.crypto].current_price[0] * coin.amount, 0);
                   return (
                     <Draggable key={port.name} draggableId={port.name} index={index}>
                       {(provided) => (
