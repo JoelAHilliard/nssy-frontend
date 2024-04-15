@@ -45,6 +45,7 @@ const SearchComponent = () => {
                             crypto.name.toLowerCase().includes(filter.toLowerCase()) || 
                             crypto.symbol.toLowerCase().includes(filter.toLowerCase())
                         ).slice(0,10).map((crypto=>{
+                            console.log(crypto)
                                 return(
                                     <a class="w-full text-left" href={`/`+crypto.symbol}>
                                         <Button className="w-full text-left flex gap-2 items-center justify-between" variant="ghost">

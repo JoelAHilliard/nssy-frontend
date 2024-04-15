@@ -42,7 +42,7 @@ export const getMarketData = async () => {
       cryptos_list.value = data.map((crypto) => ({
           "name": crypto.name,
           "symbol": crypto.symbol,
-          "img": crypto.image,
+          "img": crypto.img,
           "daily": crypto.dailyChange,
       }));
       cryptos_map.value =  data.reduce((map, crypto) => {

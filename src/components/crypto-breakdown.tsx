@@ -175,7 +175,7 @@ const CryptoBreakdown = (params) => {
                     <CardHeader>
                         <div class="grid grid-cols-2">
                             <div class="flex items-center">
-                                <img class="w-[24px] h-[24px] rounded-full" src={crypto.image}></img>
+                                <img class="w-[24px] h-[24px] rounded-full" src={crypto.img}></img>
                                 <p class="text-xl font-semibold text-foreground flex items-center gap-1">{crypto.name} <span class="text-base text-gray-500">{crypto.symbol}</span></p>
                             </div>
                             
