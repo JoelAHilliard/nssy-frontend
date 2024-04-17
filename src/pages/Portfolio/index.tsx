@@ -148,8 +148,8 @@ const Portfolio = () => {
                 <div class="flex py-2 max-w-screen-xl max-w-container mx-auto w-full flex flex-col items-center justify-start gap-2 px-2 ">
                     <div class="flex justify-between flex-col w-full gap-2 lg:flex-row">
                         <div className="inline-flex flex flex-col items-center bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md items-center justify-center">
-                                <div onClick={()=>{}} >
-                                    <span className="relative inline-block px-6 py-3 whitespace-nowrap font-bold transition duration-300 ease-in-out transform hover:scale-102 hover:shadow-md group w-full mx-auto">
+                                <div >
+                                    <span className="relative inline-block px-6 py-3 whitespace-nowrap font-bold transition duration-300 ease-in-out transform hover:scale-102 hover:shadow-md group">
                                         <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 transition duration-300 ease-in-out group-hover:opacity-100 rounded-lg"></span>
                                         <span className="relative z-10 text-gray-800 dark:text-gray-100 transition duration-300 ease-in-out group-hover:text-white text-center mx-auto flex justify-center">
                                             Total Val: {denom === "USD" ? total_port_value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : denom === "BTC" ? total_port_value.toFixed(3) + " BTC" : total_port_value.toFixed(2) + " ETH"}
