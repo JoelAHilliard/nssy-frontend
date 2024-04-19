@@ -26,29 +26,22 @@ export const loadPortfolios = async () =>{
 export const getMarketData = async () => {
     await loadPortfolios();
     
-    // const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd';
-    const url = API_URL;
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        'x-cg-demo-api-key': 'CG-tk9DXKWBwJCmTo8kEmB1JuZ7	'
-      }
-    };
-    fetch(url,options)
+    fetch("https://scraperapi-production.up.railway.app/")
     .then(res => res.json())
     .then(data => {
       market_data.value = data;
-      cryptos_list.value = data.map((crypto) => ({
-          "name": crypto.name,
-          "symbol": crypto.symbol,
+      cryptos_list.value = data.map((crypto,index) => ({
+          "n": crypto.n,
+          "s": crypto.s,
           "img": crypto.img,
-          "daily": crypto.dailyChange,
+          "d": crypto.d,
       }));
       cryptos_map.value =  data.reduce((map, crypto) => {
-              map[crypto.name] = crypto;
+              map[crypto.n] = crypto;
               return map;
           }, {});
+
+      console.log("datasset",cryptos_map.value)
 
 
       if(!portfolio_data.value){
@@ -58,14 +51,14 @@ export const getMarketData = async () => {
         const startTime = performance.now(); // Start timing
         portfolio_data.value.forEach(portfolio => {
             portfolio.coins.forEach(portfolioCoin => {
-                let marketCoin = market_data.value.find(mCoin => mCoin.symbol === portfolioCoin.crypto.symbol);
+                let marketCoin = market_data.value.find(mCoin => mCoin.s === portfolioCoin.crypto.s);
                 if (marketCoin) {
                     portfolioCoin.crypto = marketCoin;
 
                     // PnL Calculation
                     let amountHeld = Number(portfolioCoin.amount);
-                    let currentPrice = marketCoin.current_price[0];
-                    let dailyChangeDecimal = marketCoin.dailyChange / 100; // Convert percentage to decimal
+                    let currentPrice = marketCoin.p;
+                    let dailyChangeDecimal = marketCoin.d / 100; // Convert percentage to decimal
                     let price24hAgo = currentPrice / (1 + dailyChangeDecimal);
 
                     let value24hAgo = amountHeld * price24hAgo;
@@ -78,12 +71,11 @@ export const getMarketData = async () => {
         });
 
       const endTime = performance.now(); // End timing
-      console.log(`Operation took ${endTime - startTime} milliseconds`);
 
       }
   
       // Sort and update table data if needed
-      tableData.value = data.sort((a, b) => b.market_cap - a.market_cap);
+      tableData.value = data.sort((a, b) => b.mcp - a.mcp);
     });
   
 

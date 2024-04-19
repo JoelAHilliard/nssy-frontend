@@ -20,7 +20,7 @@ import {
 import { useEffect, useState } from "preact/hooks";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signal } from "@preact/signals";
+import { effect, signal } from "@preact/signals";
 import { Edit } from "./components/portfolio-edit";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -30,13 +30,9 @@ import PortfolioDropdown from "./components/portfolio-select";
 import PortfolioTable from "./components/portfolio-table";
 import PortQRCode from "@/components/portfolio-qr-code";
 import { Dialog, DialogContent, DialogTrigger } from "@radix-ui/react-dialog";
-
-const activeFilter = signal("market_cap");
-
-const filter_ports = signal([])
+import CombinedPie from "./components/portfolio-combined-pie";
 
 const Portfolio = () => {
-    
     const [total_port_value,setTotalPortValue] = useState(0);
     const [activePortVal,setActivePortVal] = useState(0);
     const [activePortName,setActivePortName] = useState(0);
@@ -46,43 +42,18 @@ const Portfolio = () => {
     const [showQRCode,setShowQRCode] = useState(false);
     const [denom,setDenom] = useState("USD");
 
-    useEffect(() => {
-        if (portfolio_data.value && cryptos_map.value) {
-          if(!port) setActivePort(portfolio_data.value[0])
-          let totalValue = 0;
-          portfolio_data.value.forEach((port) => {
-            let portValue = 0;
-            port.coins.forEach((coin) => {
-              if (cryptos_map.value[coin.crypto]) {
-                portValue += coin.amount * cryptos_map.value[coin.crypto].current_price[0];
-              }
-            });
-            totalValue += portValue;
-          });
-          setTotalPortValue(totalValue);
-        }
-    }, [portfolio_data.value, cryptos_map.value]);
-
     const handleSetActivePort = (a) => {
         setActivePort(a);
     }
-    
 
     useEffect(()=>{
-        if(!port) {
-            setShowCreate(true);
+        if(portfolio_data.value[0]) {
+            setActivePort(portfolio_data.value[0])
+            
         } else {
-            setShowCreate(false);
+            setShowCreate(true);
         }
-    },[port])
-    
-    useEffect(()=>{
-        if(!port) return
-        
-        setActivePortName(port.name);
-
-    },[port])
-
+    },[portfolio_data.value])
 
     useEffect(()=>{
 
@@ -92,7 +63,7 @@ const Portfolio = () => {
             portfolio_data.value.forEach((port) => {
                 port.coins.forEach((coin) => {
                     if (cryptos_map.value[coin.crypto]) {
-                        portValue += coin.amount * cryptos_map.value[coin.crypto].current_price[0];
+                        portValue += coin.amount * cryptos_map.value[coin.crypto].p;
                     }
                 })
 
@@ -104,11 +75,11 @@ const Portfolio = () => {
             portfolio_data.value.forEach((port) => {
                 port.coins.forEach((coin) => {
                     if (cryptos_map.value[coin.crypto]) {
-                        portValue += coin.amount * cryptos_map.value[coin.crypto].current_price[0];
+                        portValue += coin.amount * cryptos_map.value[coin.crypto].p;
                     }
                 })
 
-                const btcPrice = cryptos_map.value['Bitcoin'].current_price[0]
+                const btcPrice = cryptos_map.value['Bitcoin'].p
 
                 setTotalPortValue(portValue / btcPrice)
             });
@@ -120,10 +91,10 @@ const Portfolio = () => {
             portfolio_data.value.forEach((port) => {
                 port.coins.forEach((coin) => {
                     if (cryptos_map.value[coin.crypto]) {
-                        portValue += coin.amount * cryptos_map.value[coin.crypto].current_price[0];
+                        portValue += coin.amount * cryptos_map.value[coin.crypto].p
                     }
                 })
-                const ethPrice = cryptos_map.value['Ethereum'].current_price[0]
+                const ethPrice = cryptos_map.value['Ethereum'].p
                 setTotalPortValue(portValue / ethPrice)
             });
         }
@@ -131,68 +102,74 @@ const Portfolio = () => {
     
     },[denom])
 
-    console.log(port)
-    if (cryptos_list.value.length == 0 || cryptos_map.value.length == 0 || !portfolio_data.value) {
-        return <div class="flex py-2 max-w-screen-xl max-w-container mx-auto w-full flex flex-col items-center justify-start gap-2 px-2"><Skeleton className="h-[500px] w-full" /></div>;
-    }
-    
-    if (portfolio_data.value.length < 1) {
-        return (
-            <div class="flex py-2 max-w-screen-xl max-w-container mx-auto w-full flex flex-col items-center justify-start gap-2 px-2">
-                <Create />
-            </div>
-        );
-    } else {
-        if(port == null) setActivePort(portfolio_data.value[0])
-        return (
-                <div class="flex py-2 max-w-screen-xl max-w-container mx-auto w-full flex flex-col items-center justify-start gap-2 px-2 ">
-                    <div class="flex justify-between flex-col w-full gap-2 lg:flex-row">
-                        <div className="inline-flex flex flex-col items-center bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md items-center justify-center">
-                                <div >
-                                    <span className="relative inline-block px-6 py-3 whitespace-nowrap font-bold transition duration-300 ease-in-out transform hover:scale-102 hover:shadow-md group">
-                                        <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 transition duration-300 ease-in-out group-hover:opacity-100 rounded-lg"></span>
-                                        <span className="relative z-10 text-gray-800 dark:text-gray-100 transition duration-300 ease-in-out group-hover:text-white text-center mx-auto flex justify-center">
-                                            Total Val: {denom === "USD" ? total_port_value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : denom === "BTC" ? total_port_value.toFixed(3) + " BTC" : total_port_value.toFixed(2) + " ETH"}
-                                        </span>
-                                    </span>
-                                </div>
-                                <div class="flex w-full justify-around gap-2 px-1 py-1">
-                                    <Button className="w-full" variant="outline" onClick={()=>{setDenom("USD")}}>USD</Button>
-                                    <Button className="w-full"  variant="outline" onClick={()=>{setDenom("BTC")}}>BTC</Button>
-                                    <Button className="w-full"  variant="outline" onClick={()=>{setDenom("ETH")}}>ETH</Button>
-                                </div>
-                        </div>
-                        <PortfolioDropdown
-                            cryptosMap={cryptos_map.value}
-                            activePortName={activePortName}
-                            setActivePortName={setActivePortName}
-                            setActivePort={handleSetActivePort}
-                            setShowCreate={setShowCreate}
-                        />
+    useEffect(() => {
+        if (portfolio_data.value && cryptos_map.value) {
+          if(!port) setActivePort(portfolio_data.value[0])
+          let totalValue = 0;
+          portfolio_data.value.forEach((port) => {
+            let portValue = 0;
+            port.coins.forEach((coin) => {
+              if (cryptos_map.value[coin.crypto]) {
+                portValue += coin.amount * cryptos_map.value[coin.crypto].p;
+              }
+            });
+            totalValue += portValue;
+          });
+          setTotalPortValue(totalValue);
+        }
+    }, [portfolio_data.value, cryptos_map.value]);
+    return Object.keys(cryptos_map.value).length > 0 ? 
+            !port ? <Create/> :
+            <div class="flex py-2 max-w-screen-xl mx-auto w-full flex-col items-center justify-start gap-2 px-2">
+                <div class="flex flex-row justify-between w-full">
+                <div className="inline-flex flex flex-col items-center bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md items-center justify-center w-full">
+                    <div class="flex w-full justify-between p-2">
+                        <span className="relative inline-block px-6 py-3 whitespace-nowrap font-bold transition duration-300 ease-in-out transform hover:scale-102 hover:shadow-md group">
+                            <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 transition duration-300 ease-in-out group-hover:opacity-100 rounded-lg"></span>
+                            <span className="relative z-10 text-gray-800 dark:text-gray-100 transition duration-300 ease-in-out group-hover:text-white text-center mx-auto flex justify-center">
+                                Total Val: {denom === "USD" ? total_port_value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : denom === "BTC" ? total_port_value.toFixed(3) + " BTC" : total_port_value.toFixed(2) + " ETH"}
+                            </span>
+                        </span>
+                    
                     </div>
-
-                    {showCreate && <Create />}
-
-                    {(port && !showCreate) &&
                     <div class="w-full">
-
-                        <PortfolioTable portfolioName={port.name} setActivePort={handleSetActivePort}/>
                         
-                        {/* <div>
-                            <Button onClick={()=>setShowQRCode(!showQRCode)}>Show Data</Button>
-                        </div>
-                        
-                        {showQRCode &&
-                            <div>
-                                <PortQRCode />
-                            </div>
-                        } */}
+                        <CombinedPie />
 
                     </div>
-                    }
+                    <div class="flex w-full justify-around gap-2 px-1 py-1">
+                        <Button className="w-full" variant="outline" onClick={()=>{setDenom("USD")}}>USD</Button>
+                        <Button className="w-full"  variant="outline" onClick={()=>{setDenom("BTC")}}>BTC</Button>
+                        <Button className="w-full"  variant="outline" onClick={()=>{setDenom("ETH")}}>ETH</Button>
+                    </div>
+                   
                 </div>
-        )
-    }
+                   
+
+                </div>
+                {showCreate && <Create />}
+
+                {(port && !showCreate) &&
+                    <div class="w-full">
+                        <div class="flex w-full justify-end">
+                            <PortfolioDropdown
+                                cryptosMap={cryptos_map.value}
+                                activePortName={port.name}
+                                setActivePortName={setActivePortName}
+                                setActivePort={handleSetActivePort}
+                                setShowCreate={setShowCreate}
+                            />
+                        </div>
+                        
+                        <PortfolioTable portName={port.name} cryptos={cryptos_map.value}/>
+
+                    </div>
+                }
+            </div>
+        : 
+        <div class='w-full'>
+            <Skeleton className="w-full" />
+        </div>
 }
 
 export default Portfolio

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, memo } from 'react';
 
 function TradingViewWidget(props) {
   const container = useRef();
-  const symbol = props.crypto.symbol.toUpperCase();
+  const symbol = props.crypto.s.toUpperCase();
   useEffect(
     () => {
       const script = document.createElement("script");

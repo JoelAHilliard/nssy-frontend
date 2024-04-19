@@ -68,9 +68,6 @@ export function Home() {
 
 	function sortTeamsBy(alltimeStats, filter, dir) {
 
-		console.log(alltimeStats)
-
-		console.log(filter)
         //create copy
         let team_arr = [...alltimeStats]
 
@@ -80,7 +77,6 @@ export function Home() {
         } else {
 			team_arr.sort((a,b) => b[String(filter)] - a[String(filter)])
         }
-        console.log(team_arr)
         return team_arr
     }
 	function intToString(num, fixed) {
@@ -113,27 +109,27 @@ export function Home() {
 								<TableHeader>
 									<TableRow>
 										<TableHead className="flex justify-start my-2">
-											<DropDownMenu activeFilter={activeFilter} callback={handleClick} filter={"market_cap_rank"} name="#"/>
+											<DropDownMenu activeFilter={activeFilter} callback={handleClick} filter={"r"} name="#"/>
 										</TableHead>
 										<TableHead className="table-cell sticky-col first-col px-0 sticky"><p class="w-full bg-card min-w-[60px] py-1 font-medium">Coin</p>
 										</TableHead>
 										<TableHead >
-											<DropDownMenu  activeFilter={activeFilter}  callback={handleClick} filter={"current_price"} name="Price"/>
+											<DropDownMenu  activeFilter={activeFilter}  callback={handleClick} filter={"p"} name="Price"/>
 										</TableHead>
 										<TableHead>
-											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"price_change_percentage_24h_in_currency"} name="Daily" />
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"d"} name="Daily" />
 										</TableHead>
 										<TableHead>
-											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"price_change_percentage_7d_in_currency"} name="Weekly" />
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"w"} name="Weekly" />
 										</TableHead>
 										<TableHead>
-											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"price_change_percentage_30d_in_currency"} name="Monthly" />
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"m"} name="Monthly" />
 										</TableHead>
 										<TableHead>
-											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"circulating_supply"} name="Circ. Supply"/>
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"d_vol"} name="24hr Vol."/>
 										</TableHead>
 										<TableHead >
-											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"market_cap"} name="Market Cap"/>
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"mcp"} name="Market Cap"/>
 										</TableHead>
 									</TableRow>
 								</TableHeader>
@@ -141,104 +137,104 @@ export function Home() {
 								<TableBody>
 									{tableData.value.filter(
 										crypto =>
-										crypto.name.toLowerCase().includes(filter.toLowerCase()) || 
-										crypto.symbol.toLowerCase().includes(filter.toLowerCase())
+										crypto.n.toLowerCase().includes(filter.toLowerCase()) || 
+										crypto.s.toLowerCase().includes(filter.toLowerCase())
 									).slice(startIndex,endIndex).map((crypto,index)=> {
 											return (
-													<TableRow className="hover:cursor-pointer font-quick" onClick={()=> handleRowClick("/"+crypto.symbol)}>
+													<TableRow className="hover:cursor-pointer font-quick" onClick={()=> handleRowClick("/"+crypto.s)}>
 															<TableCell className="font-thin text-xs text-center table-cell">
-																<a class="flex flex-col justify-start" href={"/" + crypto.symbol}>
+																<a class="flex flex-col justify-start" href={"/" + crypto.s}>
 																	
 																	<span class="text-muted-foreground text-left">
-																		{crypto.market_cap_rank}
+																		{crypto.r}
 																	</span>
 																</a>
 																
 															</TableCell>
 
 															<TableCell className="font-medium text-xs table-cell sticky-col first-col transition-colors px-0 sticky">
-																	<a class="flex items-center bg-background" href={"/" + crypto.symbol}>
+																	<a class="flex items-center bg-background" href={"/" + crypto.s}>
 																		<img class="w-[24px] h-[24px] rounded-full bg-background" src={crypto.img}></img>
 																		<div>
 
-																			<p class="bg-card min-w-[60px] px-2 whitespace-break-spaces">{crypto.name}</p>
-																			<p class="bg-card min-w-[60px] px-2 whitespace-break-spaces text-muted-foreground"><span>${intToString(crypto.market_cap,false)} </span></p>
+																			<p class="bg-card min-w-[60px] px-2 whitespace-break-spaces">{crypto.n}</p>
+																			<p class="bg-card min-w-[60px] px-2 whitespace-break-spaces text-muted-foreground"><span>${intToString(crypto.mcp,false)} </span></p>
 																		</div>
 																	
 																	</a>
 
 															</TableCell>
 															<TableCell className="font-medium text-center table-cell">
-																<a href={"/" + crypto.symbol}>
-																${crypto.current_price[0].toFixed(2) < 0.0001 ? formatSmallNumber(crypto.current_price[0]) : crypto.current_price[0] }
+																<a href={"/" + crypto.s}>
+																${crypto.p.toFixed(2) < 0.0001 ? formatSmallNumber(crypto.p) : crypto.p }
 																</a>
 															</TableCell>
 															
 															<TableCell className="font-medium text-center table-cell">
-																{crypto.dailyChange ? (
-																	crypto.dailyChange > 0 ? (
-																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-green-600">
+																{crypto.d != null ? (
+																	crypto.d > 0 ? (
+																	<a href={"/" + crypto.s} class="flex items-center justify-center gap-0.5 text-green-600">
 																		<ChevronUp size="16px" color="green" />
-																		{crypto.dailyChange.toFixed(2)}%
+																		{crypto.d.toFixed(2)}%
 																	</a>
 																	) : (
-																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-red-600">
+																	<a href={"/" + crypto.s} class="flex items-center justify-center gap-0.5 text-red-600">
 																		<ChevronDown size="16px" color="red" />
-																		{crypto.dailyChange.toFixed(2)}%
+																		{crypto.d.toFixed(2)}%
 																	</a>
 																	)
 																) : (
-																	<a href={"/" + crypto.symbol}>
+																	<a href={"/" + crypto.s}>
 																		"N/A"
 																	</a>
 																)}
 															</TableCell>
 															<TableCell className="font-medium text-center table-cell">
-																{crypto.weeklyChange ? (
-																	crypto.weeklyChange > 0 ? (
-																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-green-600">
+																{crypto.w != null ? (
+																	crypto.w > 0 ? (
+																	<a href={"/" + crypto.s} class="flex items-center justify-center gap-0.5 text-green-600">
 																		<ChevronUp size="16px" color="green" />
-																		{crypto.weeklyChange.toFixed(2)}%
+																		{crypto.w.toFixed(2)}%
 																	</a>
 																	) : (
-																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-red-600">
+																	<a href={"/" + crypto.s} class="flex items-center justify-center gap-0.5 text-red-600">
 																		<ChevronDown size="16px" color="red" />
-																		{crypto.weeklyChange.toFixed(2)}%
+																		{crypto.w.toFixed(2)}%
 																	</a>
 																	)
 																) : (
-																	<a href={"/" + crypto.symbol}>
+																	<a href={"/" + crypto.s}>
 																		N/A
 																	</a>
 																)}
 															</TableCell>
 															<TableCell className="font-medium text-center table-cell">
-																{crypto.monthlyChange ? (
-																	crypto.monthlyChange > 0 ? (
-																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-green-600">
+																{crypto.m != null ? (
+																	crypto.m > 0 ? (
+																	<a href={"/" + crypto.s} class="flex items-center justify-center gap-0.5 text-green-600">
 																		<ChevronUp size="16px" color="green" />
-																		{crypto.monthlyChange.toFixed(2)}%
+																		{crypto.m.toFixed(2)}%
 																	</a>
 																	) : (
-																	<a href={"/" + crypto.symbol} class="flex items-center justify-center gap-0.5 text-red-600">
+																	<a href={"/" + crypto.s} class="flex items-center justify-center gap-0.5 text-red-600">
 																		<ChevronDown size="16px" color="red" />
-																		{crypto.monthlyChange.toFixed(2)}%
+																		{crypto.m.toFixed(2)}%
 																	</a>
 																	)
 																) : (
-																	<a href={"/" + crypto.symbol}>
+																	<a href={"/" + crypto.s}>
 																		N/A
 																	</a>
 																)}
 															</TableCell>
 															<TableCell className="font-medium text-center table-cell">
-																<a href={"/" + crypto.symbol}>
-																	{intToString(crypto.circulating_supply,false)}
+																<a href={"/" + crypto.s}>
+																	{intToString(crypto.d_vol,false)}
 																</a>
 															</TableCell>
 															<TableCell className="font-medium text-center table-cell">
-																<a href={"/" + crypto.symbol}>
-																	{intToString(crypto.market_cap,false)}
+																<a href={"/" + crypto.s}>
+																	{intToString(crypto.mcp,false)}
 																</a>
 															</TableCell>
 													</TableRow>

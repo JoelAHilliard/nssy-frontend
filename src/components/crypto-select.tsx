@@ -10,8 +10,8 @@ const CryptoSelector = ({ cryptosList, onSelect }) => {
 
   const filteredCryptos = cryptosList.filter(
     crypto =>
-      crypto.name.toLowerCase().includes(filter.toLowerCase()) ||
-      crypto.symbol.toLowerCase().includes(filter.toLowerCase())
+      crypto.n.toLowerCase().includes(filter.toLowerCase()) ||
+      crypto.s.toLowerCase().includes(filter.toLowerCase())
   );
 
   const handleShowMore = () => {
@@ -36,7 +36,6 @@ const CryptoSelector = ({ cryptosList, onSelect }) => {
       <div class="relative flex flex-col w-full gap-1 overflow-y-scroll max-h-[170px]">
         <div class="overflow-y-scroll max-h-[300px] mt-3">
           {filteredCryptos.slice(0, showCount).map((crypto) => {
-            console.log(crypto)
             
             return (
             <div class="w-full text-left" onClick={() => onSelect(crypto)}>
@@ -44,9 +43,9 @@ const CryptoSelector = ({ cryptosList, onSelect }) => {
                 <div class="flex items-center gap-2 py-1">
                   <img class="w-[24px] h-[24px] rounded-full" src={crypto.img} />
                   <div class="flex flex-col">
-                    <span class="text-left w-full">{crypto.name}</span>
+                    <span class="text-left w-full">{crypto.n}</span>
                     <div class="flex flex-row gap-2">
-                      <span class="text-left text-muted-foreground">{crypto.symbol.toUpperCase()}</span>
+                      <span class="text-left text-muted-foreground">{crypto.s.toUpperCase()}</span>
                     </div>
                   </div>
                 </div>

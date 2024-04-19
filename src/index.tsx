@@ -22,7 +22,10 @@ export function intToString(num, fixed) {
 	return e;
 }
 import { Toaster } from "@/components/ui/sonner"
-
+export function removeSymbols(value) {
+    if (value === "N/A") return null;
+    return parseFloat(value.replace(/[^0-9.]/g, ''));
+  }
 export function App() {
 
 	// if ('serviceWorker' in navigator) {

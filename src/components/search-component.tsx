@@ -42,19 +42,18 @@ const SearchComponent = () => {
                         <div class="flex flex-col w-full gap-1">
                         {cryptos_list.value.filter(
                             crypto =>
-                            crypto.name.toLowerCase().includes(filter.toLowerCase()) || 
-                            crypto.symbol.toLowerCase().includes(filter.toLowerCase())
+                            crypto.n.toLowerCase().includes(filter.toLowerCase()) || 
+                            crypto.s.toLowerCase().includes(filter.toLowerCase())
                         ).slice(0,10).map((crypto=>{
-                            console.log(crypto)
                                 return(
-                                    <a class="w-full text-left" href={`/`+crypto.symbol}>
+                                    <a class="w-full text-left" href={`/`+crypto.s}>
                                         <Button className="w-full text-left flex gap-2 items-center justify-between" variant="ghost">
                                             <div class="flex items-center gap-2 py-1">
                                                 <img class="w-[24px] h-[24px] rounded-full" src={crypto.img}></img>
                                                 <div class="flex flex-col">
-                                                    <span class="text-left w-full">{crypto.name}</span>
+                                                    <span class="text-left w-full">{crypto.n}</span>
                                                     <div class="flex flex-row gap-2">
-                                                        <span class="text-left text-muted-foreground">{crypto.symbol.toUpperCase()}</span>
+                                                        <span class="text-left text-muted-foreground">{crypto.s.toUpperCase()}</span>
                                                     </div>
                                                 </div>
                                             </div>

@@ -8,6 +8,8 @@ import { portfolio_data } from '@/preact-service';
 
 const PortfolioDropdown = ({ cryptosMap, activePortName, setActivePortName, setActivePort, setShowCreate }) => {
 
+
+  console.log(portfolio_data.value)
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -32,7 +34,7 @@ const PortfolioDropdown = ({ cryptosMap, activePortName, setActivePortName, setA
             {(provided) => {return (
               <DropdownMenuRadioGroup {...provided.droppableProps} ref={provided.innerRef} value={activePortName} onValueChange={setActivePortName}>
                 {portfolio_data.value.length > 0 && portfolio_data.value.map((port, index) => {
-                  const portValue = port.coins.reduce((acc, coin) => acc + cryptosMap[coin.crypto].current_price[0] * coin.amount, 0);
+                  const portValue = port.coins.reduce((acc, coin) => acc + cryptosMap[coin.crypto].p * coin.amount, 0);
                   return (
                     <Draggable key={port.name} draggableId={port.name} index={index}>
                       {(provided) => (

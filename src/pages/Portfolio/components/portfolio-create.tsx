@@ -72,14 +72,14 @@ const Create = (props) => {
     const [filteredCryptos, setFilterCryptos] = useState(cryptos_names);
 
     const handleCryptoSelect = (c) => {
-        if(selectedCryptos[c.name]) {
-            toast.warning(`${c.name} ($${c.symbol.toUpperCase()}) is already added.`,{
+        if(selectedCryptos[c.n]) {
+            toast.warning(`${c.n} ($${c.s.toUpperCase()}) is already added.`,{
                 description: "Try adding a different asset.",
             })
             return
         }
         const cryptos = {...selectedCryptos};
-        cryptos[c.name] = {crypto:c.name, amount:0}; 
+        cryptos[c.n] = {crypto:c.n, amount:0}; 
 
         setSelectedCryptos(cryptos);
     }
@@ -112,7 +112,6 @@ const Create = (props) => {
     const handlePortCopyEntry = () => {
         const data = JSON.parse(portData);
 
-        console.log(data)
         portfolio_data.value = data;
     }
     return (
@@ -155,7 +154,7 @@ const Create = (props) => {
                             return(
                                 <TableRow key={index}>
                                     <TableCell className="font-medium flex items-center gap-2">
-                                        <img class="h-8" src={cryptos_map.value[selectedCryptos[key].crypto].image}/> ${cryptos_map.value[selectedCryptos[key].crypto].symbol.toUpperCase()}
+                                        <img class="h-8" src={cryptos_map.value[selectedCryptos[key].crypto].image}/> ${cryptos_map.value[selectedCryptos[key].crypto].s.toUpperCase()}
                                     </TableCell>
                                     <TableCell className="relative">
                                         <Input
@@ -170,7 +169,7 @@ const Create = (props) => {
                                             className="pr-12"
                                         />
                                         <span className="absolute right-2 top-1/2 transform -translate-y-1/2 mr-2 text-muted-foreground">
-                                            = {(parseFloat(selectedCryptos[key].amount) * cryptos_map.value[selectedCryptos[key].crypto].current_price[0]).toLocaleString("en-US", {style:"currency", currency:"USD"})}
+                                            = {(parseFloat(selectedCryptos[key].amount) * cryptos_map.value[selectedCryptos[key].crypto].p).toLocaleString("en-US", {style:"currency", currency:"USD"})}
                                         </span>
                                     </TableCell>
                                 </TableRow>

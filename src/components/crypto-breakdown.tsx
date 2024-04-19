@@ -29,7 +29,7 @@ const CryptoBreakdown = (params) => {
             setIsLoading(true);
             try {
                 const ticker = location.path.substring(1, location.path.length);
-                let foundCrypto = params.crypto || market_data.value?.find(c => c.symbol === ticker);
+                let foundCrypto = params.crypto || market_data.value?.find(c => c.s === ticker);
                 
                 // inital page load will not have marketdata yet
                 if(!foundCrypto && !market_data.value){
@@ -59,7 +59,7 @@ const CryptoBreakdown = (params) => {
             setIsLoading(true);
             try {
                 const ticker = location.path.substring(1, location.path.length);
-                let foundCrypto = params.crypto || market_data.value?.find(c => c.symbol === ticker);
+                let foundCrypto = params.crypto || market_data.value?.find(c => c.s === ticker);
                 if (!foundCrypto) {
                     setNotFound(true);
                 } else {
@@ -176,25 +176,25 @@ const CryptoBreakdown = (params) => {
                         <div class="grid grid-cols-2">
                             <div class="flex items-center">
                                 <img class="w-[24px] h-[24px] rounded-full" src={crypto.img}></img>
-                                <p class="text-xl font-semibold text-foreground flex items-center gap-1">{crypto.name} <span class="text-base text-gray-500">{crypto.symbol}</span></p>
+                                <p class="text-xl font-semibold text-foreground flex items-center gap-1">{crypto.n} <span class="text-base text-gray-500">{crypto.s}</span></p>
                             </div>
                             
-                            <p class="text-xl text-foreground">$<span class="font-bold">{crypto.current_price[0]}</span>   
+                            <p class="text-xl text-foreground">$<span class="font-bold">{crypto.p}</span>   
                             
                             <span>
-                                {crypto.dailyChange && <span class={crypto.dailyChange > 0 ? `text-left text-green-600`: `text-left text-red-600`}> {crypto.dailyChange.toFixed(2)}%</span>}
+                                {crypto.d && <span class={crypto.d > 0 ? `text-left text-green-600`: `text-left text-red-600`}> {crypto.d.toFixed(2)}%</span>}
                             </span>
                             </p>
                         </div>
                     </CardHeader>
                     <CardContent>
                         <div class="grid grid-cols-2 text-sm mt-2">
-                            <p class="text-foreground  whitespace-nowrap text-left">Circ. Supply: <span class="font-semibold">{intToString(crypto.circulating_supply,false)}</span></p>
-                            <p class="text-foreground whitespace-nowrap text-left">Market Cap: <span class="font-semibold">{intToString(crypto.market_cap,false)}</span></p>
+                            <p class="text-foreground  whitespace-nowrap text-left">24hr Volume: $<span class="font-semibold">{intToString(crypto.d_vol,false)}</span></p>
+                            <p class="text-foreground whitespace-nowrap text-left">Market Cap: $<span class="font-semibold">{intToString(crypto.mcp,false)}</span></p>
                         </div>
                         <div class="grid grid-cols-2 text-sm mt-2">
-                            {crypto.weeklyChange && <p class="text-left">Weekly: <span class={crypto.weeklyChange > 0 ? ` "font-semibold text-green-600` : `"font-semibold text-red-600`}>{crypto.weeklyChange.toFixed(2)} %</span></p>}
-                            {crypto.monthlyChange && <p class="text-left">Monthly : <span class={crypto.monthlyChange > 0 ? ` "font-semibold text-green-600` : `"font-bold text-red-600`}>{crypto.monthlyChange.toFixed(2)} %</span></p>}
+                            {crypto.w && <p class="text-left">Weekly: <span class={crypto.w > 0 ? ` "font-semibold text-green-600` : `"font-semibold text-red-600`}>{crypto.w.toFixed(2)} %</span></p>}
+                            {crypto.m && <p class="text-left">Monthly : <span class={crypto.m > 0 ? ` "font-semibold text-green-600` : `"font-bold text-red-600`}>{crypto.m.toFixed(2)} %</span></p>}
                         </div>
                         <Separator class="py-4"/>
                         <div class="lg:h-[600px] h-[400px] py-4">

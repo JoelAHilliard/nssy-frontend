@@ -6,15 +6,18 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { Edit } from "./portfolio-edit";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
-const PortfolioTable = ({portfolioName, handleDelete}) =>{
-    const port = portfolio_data.value.find((c) => c.name === portfolioName);
-    
+import { effect } from "@preact/signals";
+import PortfolioDropdown from "./portfolio-select";
+
+const PortfolioTable = ({portName,cryptos}) =>{
+    const port = portfolio_data.value.filter((p)=> p.name === portName)[0];
+    console.log(port)
     const options = {
         series: [{
           type: 'pie',
           name: 'Coin Percentage',
           data: port.coins.map(coin => {
-            const price = cryptos_map.value[coin.crypto] ? cryptos_map.value[coin.crypto].current_price[0] : null;
+            const price = cryptos[coin.crypto] ? cryptos[coin.crypto].p : null;
             return ({
                 name: coin.crypto,
                 y: coin.amount * price // Assumes getCoinPrice() returns the current price of the coin in USD
@@ -43,28 +46,34 @@ const PortfolioTable = ({portfolioName, handleDelete}) =>{
           enabled: false
         },
         tooltip: {
-          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+          pointFormat: '<b>{point.percentage:.1f}%</b>'
         }
     };
     
     let activePortVal = 0;
                                 
     for(let i = 0;i<port.coins.length;i++){
-        activePortVal += port.coins[i].amount * cryptos_map.value[port.coins[i].crypto].current_price[0]
+        activePortVal += port.coins[i].amount * cryptos[port.coins[i].crypto].p
     }
 
     if(!port) return <span>port null</span>
+    console.log(port)
     return (
         <div class="w-full mx-auto pt-0 mt-0">
                             
         <div class="w-[100%] flex flex-col mt-0">
-            <span class="mt-2 text-xl font-bold">{port.name}  <span class="underline font-thin text-lg">{activePortVal.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span></span>
-            <span class="text-muted-foreground text-sm">{port.description}</span>
-            <HighchartsReact
-                highcharts={Highcharts}
-                options={options}
-            />
-            <Edit portfolio={port.name} handleDelete={handleDelete}/>
+            <div class='flex'>
+                <div class="flex flex-col justify-center items-center w-[50%]">
+                    <span class="mt-2 text-xl font-bold">{port.name}  <span class="underline font-thin text-lg">{activePortVal.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span></span>
+                    <span class="text-muted-foreground text-sm">{port.description}</span>
+                </div>
+                  <HighchartsReact
+                    highcharts={Highcharts}
+                    options={options}
+                />
+            </div>
+           
+            <Edit portfolio={portName} />
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -86,8 +95,8 @@ const PortfolioTable = ({portfolioName, handleDelete}) =>{
                         </TableRow>
                     ) : (
                         port.coins.map((crypto, index) => {
-                            const coinData = cryptos_map.value[crypto.crypto];
-                            
+                            const coinData = cryptos[crypto.crypto];
+                            console.log(coinData)
                             if (!coinData) {
                                 return null; 
                             }
@@ -97,73 +106,73 @@ const PortfolioTable = ({portfolioName, handleDelete}) =>{
                                     <TableCell className="font-medium flex flex-row items-center">
                                     <Avatar className="h-8 w-8 flex flex-row">
                                         <AvatarImage src={coinData.img ? coinData.img : null} />
-                                        <AvatarFallback>{coinData.symbol}</AvatarFallback>
+                                        <AvatarFallback>{coinData.s}</AvatarFallback>
                                     </Avatar>
                                     <div class="flex flex-col ml-1">
                                         <span>{crypto.crypto}</span> 
-                                        <span class="text-muted-foreground">{coinData.symbol.toUpperCase()}</span> 
+                                        <span class="text-muted-foreground">{coinData.s.toUpperCase()}</span> 
                                     </div>
                                     </TableCell>
                                     <TableCell>{crypto.amount}</TableCell>
-                                    <TableCell>{coinData.current_price[0].toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</TableCell>
+                                    <TableCell>{coinData.p.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</TableCell>
                                     <TableCell className="font-medium text-left table-cell">
-                                        {coinData.dailyChange ? (
-                                            coinData.dailyChange > 0 ? (
-                                            <a href={"/" + coinData.symbol} class="flex items-start justify-start gap-0.5 text-green-600">
+                                        {coinData.d ? (
+                                            coinData.d > 0 ? (
+                                            <a href={"/" + coinData.s} class="flex items-start justify-start gap-0.5 text-green-600">
                                                 <ChevronUp size="16px" color="green" />
-                                                {coinData.dailyChange.toFixed(2)}%
+                                                {coinData.d.toFixed(2)}%
                                             </a>
                                             ) : (
-                                            <a href={"/" + coinData.symbol} class="flex items-start justify-start gap-0.5 text-red-600">
+                                            <a href={"/" + coinData.s} class="flex items-start justify-start gap-0.5 text-red-600">
                                                 <ChevronDown size="16px" color="red" />
-                                                {coinData.dailyChange.toFixed(2)}%
+                                                {coinData.d.toFixed(2)}%
                                             </a>
                                             )
                                         ) : (
-                                            <a href={"/" + coinData.symbol}>
+                                            <a href={"/" + coinData.s}>
                                                 "N/A"
                                             </a>
                                         )}
                                     </TableCell>
                                     <TableCell className="font-medium text-left table-cell">
-                                        {coinData.dailyChange ? (
-                                            coinData.dailyChange > 0 ? (
-                                            <a href={"/" + coinData.symbol} class="flex items-start justify-start gap-0.5 text-green-600">
+                                        {coinData.d ? (
+                                            coinData.d > 0 ? (
+                                            <a href={"/" + coinData.s} class="flex items-start justify-start gap-0.5 text-green-600">
                                                 <ChevronUp size="16px" color="green" />
-                                                {coinData.dailyChange.toFixed(2)}%
+                                                {coinData.d.toFixed(2)}%
                                             </a>
                                             ) : (
-                                            <a href={"/" + coinData.symbol} class="flex items-start justify-start gap-0.5 text-red-600">
+                                            <a href={"/" + coinData.s} class="flex items-start justify-start gap-0.5 text-red-600">
                                                 <ChevronDown size="16px" color="red" />
-                                                {coinData.dailyChange.toFixed(2)}%
+                                                {coinData.d.toFixed(2)}%
                                             </a>
                                             )
                                         ) : (
-                                            <a href={"/" + coinData.symbol}>
+                                            <a href={"/" + coinData.s}>
                                                 "N/A"
                                             </a>
                                         )}
                                     </TableCell>
                                     <TableCell className="font-medium text-left table-cell">
-                                        {coinData.monthlyChange ? (
-                                            coinData.monthlyChange > 0 ? (
-                                            <a href={"/" + coinData.symbol} class="flex items-start justify-start gap-0.5 text-green-600">
+                                        {coinData.m ? (
+                                            coinData.m > 0 ? (
+                                            <a href={"/" + coinData.s} class="flex items-start justify-start gap-0.5 text-green-600">
                                                 <ChevronUp size="16px" color="green" />
-                                                {coinData.monthlyChange.toFixed(2)}%
+                                                {coinData.m.toFixed(2)}%
                                             </a>
                                             ) : (
-                                            <a href={"/" + coinData.symbol} class="flex items-start justify-start gap-0.5 text-red-600">
+                                            <a href={"/" + coinData.s} class="flex items-start justify-start gap-0.5 text-red-600">
                                                 <ChevronDown size="16px" color="red" />
-                                                {coinData.monthlyChange.toFixed(2)}%
+                                                {coinData.m.toFixed(2)}%
                                             </a>
                                             )
                                         ) : (
-                                            <a href={"/" + coinData.symbol}>
+                                            <a href={"/" + coinData.s}>
                                                 "N/A"
                                             </a>
                                         )}
                                     </TableCell>
-                                    <TableCell className="text-right">{(coinData.current_price[0] * crypto.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</TableCell>
+                                    <TableCell className="text-right">{(coinData.p * crypto.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</TableCell>
                                 </TableRow>
                             );
                         })

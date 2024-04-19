@@ -22,17 +22,13 @@ import {
 import { Edit2, TrashIcon } from "lucide-react";
 import CryptoSelector from "@/components/crypto-select";
 import { Separator } from "@/components/ui/separator";
-export function Edit({ portfolio, handleDelete }) {
+export function Edit({ portfolio }) {
   const portfolio_name = portfolio;
   const port = portfolio_data.value.find((c) => c.name === portfolio);
 
-  if(!port) {
-    handleDelete(portfolio_data.value[0])
-    return;
-  }
   const [editedName, setEditedName] = useState(portfolio_name);
   const [showAdd, setShowAdd] = useState(false);
-  const [editedDescription, setEditedDescription] = useState(port.description);
+  const [editedDescription, setEditedDescription] = useState("");
   const [editedCoins, setEditedCoins] = useState(port.coins);
 
 
@@ -94,7 +90,6 @@ export function Edit({ portfolio, handleDelete }) {
       p.name !== portfolio_name
     );
     portfolio_data.value = updatedPortfolioData;
-    handleDelete();
     setOpen(false);
   }
   const handleAddCrypto = () =>{
@@ -102,7 +97,7 @@ export function Edit({ portfolio, handleDelete }) {
 
     const added_copy = [...addedCryptos];
 
-    added_copy.push({crypto:selectedCrypto.name, amount:addAmount});
+    added_copy.push({crypto:selectedCrypto.n, amount:addAmount});
 
     setAddedCryptos(added_copy);
 
@@ -111,7 +106,7 @@ export function Edit({ portfolio, handleDelete }) {
   }
 
   const removeFromAdded = (crypto) => {
-    const arr = addedCryptos.filter((c)=> c.crypto.name !== crypto.crypto.name)
+    const arr = addedCryptos.filter((c)=> c.crypto.n !== crypto.crypto.n)
     setAddedCryptos(arr);
   }
   useEffect(() => {
@@ -208,7 +203,7 @@ export function Edit({ portfolio, handleDelete }) {
                       <span>
                         {selectedCrypto ? (
                           <span>
-                            Selected: <span className="font-bold">{selectedCrypto.symbol.toUpperCase()}</span>
+                            Selected: <span className="font-bold">{selectedCrypto.s.toUpperCase()}</span>
                           </span>
                         ) : (
                           <span className="flex items-center text-muted">
