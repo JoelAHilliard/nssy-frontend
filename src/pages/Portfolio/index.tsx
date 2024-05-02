@@ -118,6 +118,14 @@ const Portfolio = () => {
           setTotalPortValue(totalValue);
         }
     }, [portfolio_data.value, cryptos_map.value]);
+
+    useEffect(()=>{ 
+        if(portfolio_data.value.length>0){
+            setActivePort(portfolio_data.value[0])
+            setShowCreate(false);
+        }
+    },[portfolio_data.value])
+    
     return Object.keys(cryptos_map.value).length > 0 ? 
             !port ? <Create/> :
             <div class="flex py-2 max-w-screen-xl mx-auto w-full flex-col items-center justify-start gap-2 px-2">

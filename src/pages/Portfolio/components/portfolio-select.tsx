@@ -9,7 +9,6 @@ import { portfolio_data } from '@/preact-service';
 const PortfolioDropdown = ({ cryptosMap, activePortName, setActivePortName, setActivePort, setShowCreate }) => {
 
 
-  console.log(portfolio_data.value)
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 

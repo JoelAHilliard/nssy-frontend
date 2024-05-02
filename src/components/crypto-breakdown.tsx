@@ -64,8 +64,6 @@ const CryptoBreakdown = (params) => {
                     setNotFound(true);
                 } else {
                     setCrypto(foundCrypto);
-                    const data = await getGraphData({ ticker: ticker, timeframe: timeframe });
-                    setGraphData(data);
                     setNotFound(false)
                 }
             } catch (error) {
@@ -95,76 +93,6 @@ const CryptoBreakdown = (params) => {
         );
     }
     
-        const minValue =  graphData['tenMinIntervalPrices'] ? Math.min(...graphData['tenMinIntervalPrices'].map(entry => entry[0])) : Math.min(...graphData['hourIntervalPrices'].map(entry => entry[0]));
-        
-
-        let xVals = graphData['tenMinIntervalPrices'] ? graphData['tenMinIntervalPrices'].map((entry)=> entry[0]) : graphData['hourIntervalPrices'].map((entry)=> entry[0])
-        let yVals = graphData['tenMinIntervalPrices'] ? graphData['tenMinIntervalPrices'].map((entry)=> new Date(entry[1])) : graphData['hourIntervalPrices'].map((entry)=> new Date(entry[1]))
-        let mid = graphData['tenMinIntervalPrices'] ? Math.floor(graphData['tenMinIntervalPrices'].length / 2) : Math.floor(graphData['hourIntervalPrices'].length / 2);
-        
-        
-        const options = {
-            series: [{
-                data: xVals,
-                color: '#3B82F6',
-                borderColor:"transparent",
-                fillColor: 'rgba(59, 130, 246, 0.3)',
-                marker:{
-                    enabled:false
-                }
-            }],
-            credits: {
-                enabled: false
-            },
-            chart: {
-                opacity:0.5,
-                backgroundColor: "transparent",
-                type: 'area',
-                height:200
-            },
-            xAxis:{
-                type:"",
-                categories: yVals,
-                labels:{
-                    formatter: function() {
-                        if (this.isLast || this.isFirst || this.pos == mid) {
-                            const date = new Date(this.value);
-                            const day = date.getDate().toString().padStart(2, '0');
-                            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // +1 because months are 0-indexed
-                            const hours = date.getHours().toString().padStart(2, '0');
-                            const minutes = date.getMinutes().toString().padStart(2, '0');
-                            return `${day}/${month} ${hours}:${minutes}`;
-                      }
-                    },
-                    style:{
-                        color:"gray"
-                    },
-                    rotation:-15
-                }
-            },
-            yAxis: {
-                // labels: {
-                //     enabled:false
-                // },
-                min:minValue,
-                title:"",
-                gridLineColor: 'transparent',
-                labels:{
-                    style:{
-                        color:"gray"
-                    }
-                }
-            },
-            title:{
-                text:undefined
-            },
-            legend:{
-                enabled:false
-            }
-        
-            // Title is omitted to ensure there's no title displayed
-        };
-
 
         return(
             <div class="py-2 max-w-screen-xl max-w-container mx-auto w-full px-2 gap-2" >
@@ -193,8 +121,8 @@ const CryptoBreakdown = (params) => {
                             <p class="text-foreground whitespace-nowrap text-left">Market Cap: $<span class="font-semibold">{intToString(crypto.mcp,false)}</span></p>
                         </div>
                         <div class="grid grid-cols-2 text-sm mt-2">
-                            {crypto.w && <p class="text-left">Weekly: <span class={crypto.w > 0 ? ` "font-semibold text-green-600` : `"font-semibold text-red-600`}>{crypto.w.toFixed(2)} %</span></p>}
-                            {crypto.m && <p class="text-left">Monthly : <span class={crypto.m > 0 ? ` "font-semibold text-green-600` : `"font-bold text-red-600`}>{crypto.m.toFixed(2)} %</span></p>}
+                            {crypto.w && <p class="text-left">Weekly: <span class={crypto.m > 0 ? ` "font-semibold text-green-600` : `"font-semibold text-red-600`}>{crypto.m.toFixed(2)} %</span></p>}
+                            {crypto.m && <p class="text-left">Daily : <span class={crypto.w > 0 ? ` "font-semibold text-green-600` : `"font-bold text-red-600`}>{crypto.w.toFixed(2)} %</span></p>}
                         </div>
                         <Separator class="py-4"/>
                         <div class="lg:h-[600px] h-[400px] py-4">

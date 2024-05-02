@@ -11,7 +11,11 @@ import PortfolioDropdown from "./portfolio-select";
 
 const PortfolioTable = ({portName,cryptos}) =>{
     const port = portfolio_data.value.filter((p)=> p.name === portName)[0];
-    console.log(port)
+
+    port.coins.sort((a,b)=>{
+        return (a.amount * cryptos[a.crypto].p) - (b.amount * cryptos[b.crypto].p)
+    })
+    
     const options = {
         series: [{
           type: 'pie',
@@ -57,7 +61,6 @@ const PortfolioTable = ({portName,cryptos}) =>{
     }
 
     if(!port) return <span>port null</span>
-    console.log(port)
     return (
         <div class="w-full mx-auto pt-0 mt-0">
                             
@@ -80,9 +83,9 @@ const PortfolioTable = ({portName,cryptos}) =>{
                         <TableHead>Name</TableHead>
                         <TableHead>Amount</TableHead>
                         <TableHead>Price</TableHead>
+                        <TableHead>Hourly</TableHead>
                         <TableHead>Daily</TableHead>
                         <TableHead>Weekly</TableHead>
-                        <TableHead>Monthly</TableHead>
                         <TableHead className="text-right">USD Holdings</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -96,7 +99,6 @@ const PortfolioTable = ({portName,cryptos}) =>{
                     ) : (
                         port.coins.map((crypto, index) => {
                             const coinData = cryptos[crypto.crypto];
-                            console.log(coinData)
                             if (!coinData) {
                                 return null; 
                             }

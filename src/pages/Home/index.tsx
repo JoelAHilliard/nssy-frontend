@@ -117,14 +117,15 @@ export function Home() {
 											<DropDownMenu  activeFilter={activeFilter}  callback={handleClick} filter={"p"} name="Price"/>
 										</TableHead>
 										<TableHead>
+											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"m"} name="Hourly" />
+										</TableHead>
+										<TableHead>
 											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"d"} name="Daily" />
 										</TableHead>
 										<TableHead>
 											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"w"} name="Weekly" />
 										</TableHead>
-										<TableHead>
-											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"m"} name="Monthly" />
-										</TableHead>
+										
 										<TableHead>
 											<DropDownMenu activeFilter={activeFilter}  callback={handleClick} filter={"d_vol"} name="24hr Vol."/>
 										</TableHead>
